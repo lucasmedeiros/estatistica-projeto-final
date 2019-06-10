@@ -23,11 +23,18 @@ titanic_data  <-
 corrplot(cor(titanic_data), method="pie", tl.col="black", type="lower")
 ```
 
+## Sobreviventes da tragédia do Titanic
+
+Utilizaremos a variável **Survived**, que diz se uma pessoa que embarcou no Titanic sobreviveu à tragédia ou não, seguindo o modelo abaixo:
+
+- "1", caso tenha sobrevivido.
+- "0", caso contrário.
+
 ## Análise da correlação com 'Survived'
 
 Escolhemos as três variáveis com maior R-quadrado em relação a variável 'Survived' que são:
 
-- **pclass:** classe socio-econômica do passageiro  
+- **Pclass:** classe socio-econômica do passageiro  
 1 = Classe alta  
 2 = Classe média  
 3 = Classe baixa  
@@ -45,9 +52,30 @@ cor(titanic_data$Survived, titanic_data$Fare)
 cor(titanic_data$Survived, titanic_data$Sex)
 ```
 
+## Histograma das variáveis
+
+```{r, echo=FALSE}
+gather(titanic_data)%>%
+  ggplot(aes(value)) +
+    geom_histogram(bins = 10) +
+      facet_wrap(~key, scales = 'free_x')
+```
+
+## Dispersão das variáveis
+```{r, echo=FALSE}
+plot(titanic_data$Survived)
+plot(titanic_data$Pclass)
+plot(titanic_data$Sex)
+plot(titanic_data$Age)
+plot(titanic_data$SibSp)
+plot(titanic_data$Parch)
+plot(titanic_data$Fare)
+```
+
 ## Modelo de regressão
-```{r}
+```{r, echo=FALSE}
 model <- lm(formula = Survived ~ Sex + Fare + Pclass, data = titanic_data)
+model
 ```
 
 ## Análise ANOVA
@@ -59,14 +87,4 @@ anova(model)
 ```{r, echo=FALSE}
 rQuadrado <- summary(model)$r.squared
 rQuadrado
-```
-
-## Histograma
-Abaixo está o histograma
-
-```{r, echo=FALSE}
-gather(titanic_data)%>%
-  ggplot(aes(value)) +
-    geom_histogram(bins = 10) +
-      facet_wrap(~key, scales = 'free_x')
 ```
