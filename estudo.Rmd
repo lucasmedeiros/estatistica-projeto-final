@@ -128,6 +128,8 @@ tidy(model)
 ```{r}
 anova(model)
 ```
+# Teste T
+A partir dos dados obtidos pela análise ANOVA, é possível perceber que pelo menos uma das variáveis possui Pr(>F) maior do que O nível de significância, fazendo com que seja rejeitada a hipótese nula de que os coeficientes de todas as variáveis possuem valor nulo, resultando em uma regressão válida.
 
 ## Removendo a variável 'fare'
 Como a variável 'fare' possui um valor-p (~0,418) maior que o nível de significância (0,05) fixado, tiraremos ela do modelo e prosseguimos.
@@ -143,10 +145,46 @@ tidy(model)
 rQuadrado <- summary(model)$r.squared
 rQuadrado
 ```
+O valor rQuadrado de 0.3683315 significa que apenas 36.83% dos dados, aproximadamente, estão sendo representados por esse modelo, valor que pode ser considerado mediano-baixo.
+
+## Interpretação do Modelo resultante
+O modelo resultante pode ser representado como sendo:
+ 
+Y = 0.592 + 0.505 * Sex - 0.166 * Pclass
 
 ## Análise dos resíduos
-Adicione a análise dos resíduos
+### Teste de homogeniedade
+
+Pelo comportamento da linha vermelha, é possivel perceber a não homogenuidade dos resíduos
+
+```{r}
+plot(model, which=3, col=c("black"))
+```
+
+### Teste de linearidade
+
+A partir do gráfico abaixo, é possivel analisar que os nossos resíduos se distribuem formando uma reta quase horizontal, o que indica que os nossos dados possuem alguma correlação linear.
+
+```{r}
+plot(model, which=1, col=c("black"))
+```
+
+
+
+
+### Teste de normalidade
+
+O nosso modelosegue uma distribuiçã normal, uma vez que os dados estão acompanhando razoavelmente a linha vermelha
+
+```{r}
+plot(model, which=2, col=c("black"))
+```
+
+### Teste De Shapiro-Wilk
+``` {r}
+shapiro.test(residuals(model))
+```
 
 ## Conclusão
-Adicione aqui uma conclusão
+A partir do modelo obtido, é possivel analisar que caso o dado seja do sexo feminino (Sex = 1), a probabilidade do mesmo de sobreviver é muito maior, o que pode ser afetado com a diminuição da classe em que você estava viajando. Tais dados, mesmo possuindo apenas 36.83% de representatividade dentro da amostra, demonstra bem a situação real que ocorreu no navio, pois uma vez que foi comandada a evacuação, muitos dos oficiais usaram a regra de embarcar primeiro mulheres e crianças. 
 
