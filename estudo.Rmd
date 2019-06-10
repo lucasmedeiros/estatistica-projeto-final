@@ -14,8 +14,9 @@ titanic_data  <-
   select(-c('Name', 'Ticket','Embarked','Cabin', 'PassengerId'))
 ```
 
-## Descrição a respeito dos dados...
-Adicionar alguma descrição
+## Descrição a respeito dos dados
+
+ Para esse estudo, foi utilizado um arquivo contendo dados de 891 tripulantes do navio Titanic, que afundou na madrugado do dia 15 de abril de 1912, logo após ter colidido com um iceberg, onde das 2224 pessoas a bordo do navio, entre tripulantes, operários e  oficiais, somente 710 sobreviveram. Nosso objetivo, então, foi a partir da análise dos dados de 7 das variáveis presentes nesse dataset, identificar se houve influencia de um ou mais fatores na sobrevivência, ou não, do passageiro.
 
 ## Correlação de todas as variáveis
 ```{r, echo=FALSE}
