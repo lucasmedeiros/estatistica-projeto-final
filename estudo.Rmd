@@ -5,11 +5,15 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE}
+library(tidyverse)
 library(corrplot)
 library(dplyr)
 library(tidyr)
 library(gghighlight)
 library(GGally)
+library(grid)
+library(gridExtra)
+library(broom)
 titanic_data  <- 
   na.omit(read.csv("data/train.csv", stringsAsFactors = FALSE)) %>%
   select(-c('Name', 'Ticket','Embarked','Cabin', 'PassengerId'))
@@ -74,6 +78,21 @@ titanic_clean_data %>%
          nbreaks = 5, layout.exp = 7)
 ```
 
+## Comportamento dos dados em relação à sobrevivência
+
+```{r, echo=FALSE}
+sex_disp <- titanic_data %>% 
+    ggplot(aes(x = Sex, y = Survived)) + 
+    geom_count() 
+pclass_disp <-titanic_data %>% 
+    ggplot(aes(x = Pclass, y = Survived)) + 
+    geom_count() 
+fare_disp <-titanic_data %>% 
+    ggplot(aes(x = Fare, y = Survived)) + 
+    geom_count() 
+grid.arrange(sex_disp, pclass_disp, fare_disp, nrow = 1)
+```
+
 ## Coeficientes de determinação das variáveis preditivas
 ```{r}
 rsquared_Pclass <- summary(lm(titanic_data$Survived ~ titanic_data$Pclass))$r.squared
@@ -95,21 +114,14 @@ gather(titanic_data)%>%
       facet_wrap(~key, scales = 'free_x')
 ```
 
-## Dispersão das variáveis
-```{r, echo=FALSE}
-plot(titanic_data$Survived)
-plot(titanic_data$Pclass)
-plot(titanic_data$Sex)
-plot(titanic_data$Age)
-plot(titanic_data$SibSp)
-plot(titanic_data$Parch)
-plot(titanic_data$Fare)
-```
+## Iniciando um modelo de regressão com todas variáveis
+Usando a abordagem *backward* temos um modelo com as três variáveis preditivas selecionadas. 
+Iremos definir como nível de significância 5%.
 
-## Modelo de regressão
-```{r, echo=FALSE}
+## Modelo de regressão inicial
+```{r}
 model <- lm(formula = Survived ~ Sex + Fare + Pclass, data = titanic_data)
-model
+tidy(model)
 ```
 
 ## Análise ANOVA
@@ -117,8 +129,24 @@ model
 anova(model)
 ```
 
-# Calculando o R-quadrado
+## Removendo a variável 'fare'
+Como a variável 'fare' possui um valor-p (~0,418) maior que o nível de significância (0,05) fixado, tiraremos ela do modelo e prosseguimos.
+
+## Novo modelo de regressão
+```{r}
+model <- lm(formula = Survived ~ Sex + Pclass, data = titanic_data)
+tidy(model)
+```
+
+## Calculando o R-quadrado
 ```{r, echo=FALSE}
 rQuadrado <- summary(model)$r.squared
 rQuadrado
 ```
+
+## Análise dos resíduos
+Adicione a análise dos resíduos
+
+## Conclusão
+Adicione aqui uma conclusão
+
