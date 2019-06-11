@@ -14,6 +14,7 @@ library(GGally)
 library(grid)
 library(gridExtra)
 library(broom)
+library(stats)
 titanic_data  <- 
   na.omit(read.csv("data/train.csv", stringsAsFactors = FALSE)) %>%
   select(-c('Name', 'Ticket','Embarked','Cabin', 'PassengerId'))
@@ -22,6 +23,96 @@ titanic_data  <-
 ## Descrição a respeito dos dados
 
  Para esse estudo, foi utilizado um arquivo contendo dados de 891 tripulantes do navio Titanic, que afundou na madrugado do dia 15 de abril de 1912, logo após ter colidido com um iceberg, onde das 2224 pessoas a bordo do navio, entre tripulantes, operários e  oficiais, somente 710 sobreviveram. Nosso objetivo, então, foi a partir da análise dos dados de 7 das variáveis presentes nesse dataset, identificar se houve influencia de um ou mais fatores na sobrevivência, ou não, do passageiro.
+
+
+## Descrição das variáveis
+
+* **survived**: se uma pessoa que embarcou no Titanic sobreviveu à tragédia ou não, seguindo o modelo abaixo:
+  + "1", caso tenha sobrevivido.
+  + "0", caso contrário.
+
+  
+* **pclass:** classe socio-econômica do passageiro  
+  + "1", caso seja da Classe alta  
+  + "2", caso seja da Classe média  
+  + "3", caso seja da Classe baixa  
+
+  
+* **sex:** sexo do passageiro  
+  + "1", caso seja Mulher  
+  + "0", caso seja Homem  
+
+  
+* **fare:** tarifa paga pelo passageiro para embarcar 
+
+* **sibsp:** número de irmãos/cônjuges do passageiro abordo do Titanic
+  + O *dataset* define relações familiares da seguinte forma...  
+    + Irmãos = irmão, irmã, meio-irmão, meia-irmã
+    + Cônjuge = marido, esposa (amantes e noivos/noivas foram ignorados)
+    
+
+* **parch:** número de pais / filhos do passageiro abordo do Titanic
+  + O *dataset* define relações familiares da seguinte forma...  
+    + Pais = mãe, pai
+    + Filhos = filho, filha, neto, neta
+
+## Histograma das variáveis
+
+```{r, echo=FALSE}
+gather(titanic_data)%>%
+  ggplot(aes(value)) +
+    geom_histogram(bins = 10) +
+      facet_wrap(~key, scales = 'free_x')
+```
+
+## Dispersão das variáveis
+```{r, echo=FALSE}
+plot(titanic_data$Survived, 
+     xlab = "Índice", 
+     ylab = "Sobreviveu",
+     pch = 19,
+     col="light green")
+
+plot(titanic_data$Pclass, 
+     xlab = "Índice", 
+     ylab = "Classe social",
+     pch = 19,
+     col="light green")
+
+plot(titanic_data$Sex, 
+     xlab = "Índice", 
+     ylab = "Sexo",
+     pch = 19,
+     col="light green")
+
+plot(titanic_data$Age, 
+     xlab = "Índice", 
+     ylab = "Idade",
+     pch = 19,
+     col="light green")
+lines(lowess(titanic_data$Age))
+
+plot(titanic_data$SibSp, 
+     xlab = "Índice", 
+     ylab = "Nº de irmãos/cônjuges",
+     pch = 19,
+     col="light green")
+lines(lowess(titanic_data$SibSp))
+
+plot(titanic_data$Parch, 
+     xlab = "Índice", 
+     ylab = "Nº de pais/filhos",
+     pch = 19,
+     col="light green")
+lines(lowess(titanic_data$Parch))
+
+plot(titanic_data$Fare, 
+     xlab = "Índice", 
+     ylab = "Tarifa paga",
+     pch = 19,
+     col="light green")
+lines(lowess(titanic_data$Fare))
+```
 
 ## Análise da correlação geral
 ```{r, echo=FALSE}
@@ -34,31 +125,6 @@ titanic_clean_data %>%
          label_size = 3, size = 4,
          nbreaks = 5, layout.exp = 7)
 ```
-
-## Sobreviventes da tragédia do Titanic
-
-Utilizaremos a variável **Survived**, que diz se uma pessoa que embarcou no Titanic sobreviveu à tragédia ou não, seguindo o modelo abaixo:
-
-- "1", caso tenha sobrevivido.
-- "0", caso contrário.
-
-## Descrição das variáveis preditivas
-
-Escolhemos três variáveis que possuem maior coeficiente de determinação sendo elas:
-
-- **Pclass:** classe socio-econômica do passageiro  
-1 = Classe alta  
-2 = Classe média  
-3 = Classe baixa  
-
-- **Sex:** sexo do passageiro  
-1 = Mulher  
-0 = Homem  
-
-- **Fare:** tarifa paga pelo passageiro para embarcar 
-
-Em outras palavras, as caracteristicas que possuem maior correlação com a sobrevivência do passageiro
-são seu sexo, status socio-econômico e tarifa paga.
 
 ## Correlações das variáveis selecionadas
 ```{r}
@@ -93,27 +159,6 @@ fare_disp <-titanic_data %>%
 grid.arrange(sex_disp, pclass_disp, fare_disp, nrow = 1)
 ```
 
-## Coeficientes de determinação das variáveis preditivas
-```{r}
-rsquared_Pclass <- summary(lm(titanic_data$Survived ~ titanic_data$Pclass))$r.squared
-rsquared_Pclass
-
-rsquared_Fare <- summary(lm(titanic_data$Survived ~ titanic_data$Fare))$r.squared
-rsquared_Fare
-
-rsquared_Sex <- summary(lm(titanic_data$Survived ~ titanic_data$Sex))$r.squared
-rsquared_Sex
-```
-
-## Histograma das variáveis
-
-```{r, echo=FALSE}
-gather(titanic_data)%>%
-  ggplot(aes(value)) +
-    geom_histogram(bins = 10) +
-      facet_wrap(~key, scales = 'free_x')
-```
-
 ## Iniciando um modelo de regressão com todas variáveis
 Usando a abordagem *backward* temos um modelo com as três variáveis preditivas selecionadas. 
 Iremos definir como nível de significância 5%.
@@ -128,7 +173,7 @@ tidy(model)
 ```{r}
 anova(model)
 ```
-# Teste T
+# Teste F
 A partir dos dados obtidos pela análise ANOVA, é possível perceber que pelo menos uma das variáveis possui Pr(>F) maior do que O nível de significância, fazendo com que seja rejeitada a hipótese nula de que os coeficientes de todas as variáveis possuem valor nulo, resultando em uma regressão válida.
 
 ## Removendo a variável 'fare'
@@ -187,4 +232,3 @@ shapiro.test(residuals(model))
 
 ## Conclusão
 A partir do modelo obtido, é possivel analisar que caso o dado seja do sexo feminino (Sex = 1), a probabilidade do mesmo de sobreviver é muito maior, o que pode ser afetado com a diminuição da classe em que você estava viajando. Tais dados, mesmo possuindo apenas 36.83% de representatividade dentro da amostra, demonstra bem a situação real que ocorreu no navio, pois uma vez que foi comandada a evacuação, muitos dos oficiais usaram a regra de embarcar primeiro mulheres e crianças. 
-
