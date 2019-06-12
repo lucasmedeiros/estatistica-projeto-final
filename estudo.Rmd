@@ -15,6 +15,7 @@ library(grid)
 library(gridExtra)
 library(broom)
 library(stats)
+library(ggplot2)
 titanic_data  <- 
   na.omit(read.csv("data/train.csv", stringsAsFactors = FALSE)) %>%
   select(-c('Name', 'Ticket','Embarked','Cabin', 'PassengerId'))
@@ -38,6 +39,9 @@ data$Age[is.na(data$Age)] <- mean(data$Age,na.rm=T)
 ## Remove as linhas que possui a variável Embarked sem dado
 data <- data[!is.na(data$Embarked),]
 rownames(data) <- NULL
+
+data.survivors = data %>% filter(Survived == 1)
+data.deads = data %>% filter(Survived == 0)
 ```
 
 ## Descrição a respeito dos dados
@@ -76,53 +80,62 @@ rownames(data) <- NULL
     + Pais = mãe, pai
     + Filhos = filho, filha, neto, neta
 
-## Histograma das variáveis
-
-```{r, echo=FALSE}
-gather(titanic_data)%>%
-  ggplot(aes(value)) +
-    geom_histogram(bins = 10) +
-      facet_wrap(~key, scales = 'free_x')
+# Análise descritiva
+### Gráficos de barra (sobreviventes)
+```{r, echo=FALSE, warning=FALSE}
+ggplot(gather(data.survivors %>% select(-c("Fare", "Age", "Survived"))), aes(value)) + 
+  geom_histogram(stat="count") + 
+  labs(x = "", y = "") +
+  facet_wrap(~key, scales = 'free_x')
 ```
 
-## Dispersão das variáveis
+### Gráficos de barra (não-sobreviventes)
+```{r, echo=FALSE, warning=FALSE}
+ggplot(gather(data.deads %>% select(-c("Fare", "Age", "Survived"))), aes(value)) + 
+  geom_histogram(stat="count") + 
+  labs(x = "", y = "") +
+  facet_wrap(~key, scales = 'free_x')
+```
+
+### Dispersão das variáveis
 ```{r, echo=FALSE}
-plot(titanic_data$Survived, titanic_data$Pclass, 
-     xlab = "Sobreviveu?", 
+plot(data$Survived, data$Pclass, 
+     xlab = "Índice", 
      ylab = "Classe social",
      pch = 19,
      col="light green")
 
-plot(titanic_data$Survived, titanic_data$Sex, 
-     xlab = "Sobreviveu?", 
+plot(data$Survived, data$Sex, 
+     xlab = "Índice", 
      ylab = "Sexo",
      pch = 19,
      col="light green")
 
-plot(titanic_data$Survived, titanic_data$Age, 
-     xlab = "Sobreviveu?", 
+plot(data$Survived, data$Age, 
+     xlab = "Índice", 
      ylab = "Idade",
      pch = 19,
      col="light green")
 
-plot(titanic_data$Survived, titanic_data$SibSp, 
-     xlab = "Sobreviveu?", 
-     ylab = "Nº de irmãos/cônjuges",
-     pch = 19,
-     col="light green")
+plot(data$Survived, data$SibSp, 
+    xlab = "Sobreviveu?", 
+    ylab = "Nº de irmãos/cônjuges",
+    pch = 19,
+    col="light green")
 
-plot(titanic_data$Survived, titanic_data$Parch, 
+plot(data$Survived, data$Parch, 
      xlab = "Sobreviveu?", 
      ylab = "Nº de pais/filhos",
      pch = 19,
      col="light green")
 
-plot(titanic_data$Survived, titanic_data$Fare, 
+plot(data$Survived, data$Fare, 
      xlab = "Sobreviveu?", 
      ylab = "Tarifa paga",
      pch = 19,
      col="light green")
 ```
+
 
 ## Análise da correlação geral
 ```{r, echo=FALSE}
