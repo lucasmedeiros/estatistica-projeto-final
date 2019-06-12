@@ -67,47 +67,41 @@ gather(titanic_data)%>%
 
 ## Dispersão das variáveis
 ```{r, echo=FALSE}
-plot(titanic_data$Survived, 
-     xlab = "Índice", 
-     ylab = "Sobreviveu",
-     pch = 19,
-     col="light green")
-
-plot(titanic_data$Pclass, 
-     xlab = "Índice", 
+plot(titanic_data$Survived, titanic_data$Pclass, 
+     xlab = "Sobreviveu?", 
      ylab = "Classe social",
      pch = 19,
      col="light green")
 
-plot(titanic_data$Sex, 
-     xlab = "Índice", 
+plot(titanic_data$Survived, titanic_data$Sex, 
+     xlab = "Sobreviveu?", 
      ylab = "Sexo",
      pch = 19,
      col="light green")
 
-plot(titanic_data$Age, 
-     xlab = "Índice", 
+plot(titanic_data$Survived, titanic_data$Age, 
+     xlab = "Sobreviveu?", 
      ylab = "Idade",
      pch = 19,
      col="light green")
 lines(lowess(titanic_data$Age))
 
-plot(titanic_data$SibSp, 
-     xlab = "Índice", 
+plot(titanic_data$Survived, titanic_data$SibSp, 
+     xlab = "Sobreviveu?", 
      ylab = "Nº de irmãos/cônjuges",
      pch = 19,
      col="light green")
 lines(lowess(titanic_data$SibSp))
 
-plot(titanic_data$Parch, 
-     xlab = "Índice", 
+plot(titanic_data$Survived, titanic_data$Parch, 
+     xlab = "Sobreviveu?", 
      ylab = "Nº de pais/filhos",
      pch = 19,
      col="light green")
 lines(lowess(titanic_data$Parch))
 
-plot(titanic_data$Fare, 
-     xlab = "Índice", 
+plot(titanic_data$Survived, titanic_data$Fare, 
+     xlab = "Sobreviveu?", 
      ylab = "Tarifa paga",
      pch = 19,
      col="light green")
