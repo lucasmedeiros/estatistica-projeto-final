@@ -242,16 +242,20 @@ plot(model, which=1, col=c("black"))
 
 ### Teste de normalidade
 
-O nosso modelosegue uma distribuiçã normal, uma vez que os dados estão acompanhando razoavelmente a linha vermelha
+O nosso modelo segue uma distribuição normal, uma vez que os dados estão acompanhando razoavelmente a linha vermelha:
 
 ```{r}
 plot(model, which=2, col=c("black"))
 ```
 
 ### Teste De Shapiro-Wilk
+Usando o teste de Shapiro-Wilk para avaliar se a amostra tem distribuição normal, temos:
+
 ``` {r}
 shapiro.test(residuals(model))
 ```
+
+Como o valor p mostrado é significativamente menor que 0.05, então temos mais uma evidência de que o nosso modelo segue uma distribuição normal.
 
 ## Conclusão
 A partir do modelo obtido, é possivel analisar que caso o dado seja do sexo feminino (Sex = 1), a probabilidade do mesmo de sobreviver é muito maior, o que pode ser afetado com a diminuição da classe em que você estava viajando. Tais dados, mesmo possuindo apenas 36.83% de representatividade dentro da amostra, demonstra bem a situação real que ocorreu no navio, pois uma vez que foi comandada a evacuação, muitos dos oficiais usaram a regra de embarcar primeiro mulheres e crianças. 
