@@ -18,6 +18,26 @@ library(stats)
 titanic_data  <- 
   na.omit(read.csv("data/train.csv", stringsAsFactors = FALSE)) %>%
   select(-c('Name', 'Ticket','Embarked','Cabin', 'PassengerId'))
+
+training.data.raw <- read.csv("data/pure-train.csv",header=T,na.strings=c(""))
+
+## Número de valores ausentes por variável
+# sapply(training.data.raw,function(x) sum(is.na(x)))
+
+## Mostrar gráficos de valores ausentes X valores observados
+# library(Amelia)
+# missmap(training.data.raw, main = "Missing values vs observed")
+
+## Removemos a variável Cabin pois ela possui muitos valores ausentes
+## E também nome e ID do passageiro, pois não serão úteis na nossa análise
+data <- subset(training.data.raw,select=c(2,3,5,6,7,8,10,12))
+
+## Para os valores ausentes da variável idade, preenchemos com a média
+data$Age[is.na(data$Age)] <- mean(data$Age,na.rm=T)
+
+## Remove as linhas que possui a variável Embarked sem dado
+data <- data[!is.na(data$Embarked),]
+rownames(data) <- NULL
 ```
 
 ## Descrição a respeito dos dados
