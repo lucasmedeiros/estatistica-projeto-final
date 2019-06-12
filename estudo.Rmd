@@ -84,28 +84,24 @@ plot(titanic_data$Survived, titanic_data$Age,
      ylab = "Idade",
      pch = 19,
      col="light green")
-lines(lowess(titanic_data$Age))
 
 plot(titanic_data$Survived, titanic_data$SibSp, 
      xlab = "Sobreviveu?", 
      ylab = "Nº de irmãos/cônjuges",
      pch = 19,
      col="light green")
-lines(lowess(titanic_data$SibSp))
 
 plot(titanic_data$Survived, titanic_data$Parch, 
      xlab = "Sobreviveu?", 
      ylab = "Nº de pais/filhos",
      pch = 19,
      col="light green")
-lines(lowess(titanic_data$Parch))
 
 plot(titanic_data$Survived, titanic_data$Fare, 
      xlab = "Sobreviveu?", 
      ylab = "Tarifa paga",
      pch = 19,
      col="light green")
-lines(lowess(titanic_data$Fare))
 ```
 
 ## Análise da correlação geral
