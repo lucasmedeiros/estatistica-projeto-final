@@ -200,7 +200,7 @@ anova(model)
 A partir dos dados obtidos pela análise ANOVA, é possível perceber que pelo menos uma das variáveis possui Pr(>F) maior do que O nível de significância, fazendo com que seja rejeitada a hipótese nula de que os coeficientes de todas as variáveis possuem valor nulo, resultando em uma regressão válida.
 
 ## Removendo a variável 'fare'
-Como a variável 'fare' possui um valor-p (~0,418) maior que o nível de significância (0,05) fixado, tiraremos ela do modelo e prosseguimos.
+Ao analisar as variáveis do modelo, primeiramente partimos da hipótese nula de que os coefientes do mesmo são iguais a zero, ou seja, a variável é irrelevante para o modelo. Com isso em mãos, verificamos o p-valor a fim de negar ou comprovar tal hipótese, ou seja, caso o p-valor da variável seja maior que o nível de significância (> 0.05), significa que a hipótese nula é verdadeira e com isso removemos a variável do modelo. A partir da análise dos p-valores das variáveis do modelo, podemos perceber que a variável 'Fare' possui um p-valor (~0.418) maior que o nível de significância fixado, então decidimos removê-la do nosso modelo.
 
 ## Novo modelo de regressão
 ```{r}
