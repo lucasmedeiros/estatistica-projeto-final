@@ -1,7 +1,15 @@
 ---
 title: "Estudo a partir de dados da embarcação de pessoas no Titanic"
 author: "Jadson Luan, Jessé Souza e Lucas Medeiros"
-output: html_document
+date: "1 de julho de 2019"
+output: 
+  html_document:
+    code_folding: "hide"
+    toc: yes
+    toc_depth: 5
+    toc_float:
+      collapsed: no
+    df_print: paged
 ---
 
 ```{r setup, include=FALSE}
@@ -14,8 +22,9 @@ library(GGally)
 library(grid)
 library(gridExtra)
 library(broom)
-library(stats)
 library(ggplot2)
+# library(stats)
+
 titanic_data  <- 
   na.omit(read.csv("data/train.csv", stringsAsFactors = FALSE)) %>%
   select(-c('Name', 'Ticket','Embarked','Cabin', 'PassengerId'))
@@ -82,6 +91,7 @@ data.deads = data %>% filter(Survived == 0)
 
 # Análise descritiva
 ### Gráficos de barra (sobreviventes)
+
 ```{r, echo=FALSE, warning=FALSE}
 ggplot(gather(data.survivors %>% select(-c("Fare", "Age", "Survived"))), aes(value)) + 
   geom_histogram(stat="count") + 
@@ -90,6 +100,7 @@ ggplot(gather(data.survivors %>% select(-c("Fare", "Age", "Survived"))), aes(val
 ```
 
 ### Gráficos de barra (não-sobreviventes)
+
 ```{r, echo=FALSE, warning=FALSE}
 ggplot(gather(data.deads %>% select(-c("Fare", "Age", "Survived"))), aes(value)) + 
   geom_histogram(stat="count") + 
@@ -98,6 +109,7 @@ ggplot(gather(data.deads %>% select(-c("Fare", "Age", "Survived"))), aes(value))
 ```
 
 ### Dispersão das variáveis
+
 ```{r, echo=FALSE}
 plot(data$Survived, data$Pclass, 
      xlab = "Índice", 
@@ -138,6 +150,7 @@ plot(data$Survived, data$Fare,
 
 
 ## Análise da correlação geral
+
 ```{r, echo=FALSE}
 # corrplot(cor(titanic_data), method="pie", tl.col="black", type="lower")
 titanic_clean_data <- titanic_data
@@ -150,6 +163,7 @@ titanic_clean_data %>%
 ```
 
 ## Correlações das variáveis selecionadas
+
 ```{r}
 cor(titanic_data$Survived, titanic_data$Pclass)
 cor(titanic_data$Survived, titanic_data$Fare)
@@ -157,6 +171,7 @@ cor(titanic_data$Survived, titanic_data$Sex)
 ```
 
 ## Análise das correlações das variáveis selecionadas
+
 ```{r, echo=FALSE}
 titanic_clean_data <- titanic_data %>% select('Survived', 'Pclass', 'Sex', 'Fare')
 titanic_clean_data %>%
@@ -181,6 +196,8 @@ fare_disp <-titanic_data %>%
     geom_count() 
 grid.arrange(sex_disp, pclass_disp, fare_disp, nrow = 1)
 ```
+
+# Criando modelo de regressão linear
 
 ## Iniciando um modelo de regressão com todas variáveis
 Usando a abordagem *backward* temos um modelo com as três variáveis preditivas selecionadas. 
@@ -236,9 +253,6 @@ A partir do gráfico abaixo, é possivel analisar que os nossos resíduos se dis
 ```{r}
 plot(model, which=1, col=c("black"))
 ```
-
-
-
 
 ### Teste de normalidade
 

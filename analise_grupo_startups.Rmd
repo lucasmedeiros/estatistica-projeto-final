@@ -1,0 +1,136 @@
+---
+title: "Análise do modelo das Startups"
+author: "Jadson Luan, Jessé Souza e Lucas Medeiros"
+date: "1 de julho de 2019"
+output: 
+  html_document:
+    code_folding: "hide"
+    toc: yes
+    toc_depth: 5
+    toc_float:
+      collapsed: no
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(corrplot)
+library(dplyr)
+library(tidyr)
+library(gghighlight)
+library(GGally)
+library(grid)
+library(gridExtra)
+library(broom)
+library(stats)
+library(ggplot2)
+library(caTools)
+library(car)
+
+startup_dataset <- read_csv(here::here("data/50_startups.csv"),
+                 col_types = "dddcd")
+
+names(startup_dataset)[names(startup_dataset) == 'ReD'] <- 'PeD'
+names(startup_dataset)[names(startup_dataset) == 'Administration'] <- 'Administracao'
+names(startup_dataset)[names(startup_dataset) == 'State'] <- 'Estado'
+names(startup_dataset)[names(startup_dataset) == 'Profit'] <- 'Lucro'
+
+set.seed(100)
+
+split = sample.split(startup_dataset$Lucro, SplitRatio = 0.8)
+
+startup_training_set = subset(startup_dataset, split == TRUE)
+startup_test_set = subset(startup_dataset, split == FALSE)
+```
+
+## Caso do grupo das startups
+
+Vamos fazer uma análise com mais abordagens de seleção de modelo a partir dos dados do grupo com a temática "*Quais gastos interferem no lucro de uma startup?*".
+
+**OBS: para todos os casos, utilizaremos nível de significância de 5%**.
+
+### Backward Elimination
+
+Inicaremos pelo caso mostrado pelo grupo, o "Backward Elimination", que tem os seguintes passos:
+
+1) Define-se o nível de significância;
+2) Ajusta-se o modelo com todas as variáveis independentes possíveis;
+3) Considera-se a variável com maior valor-p;
+4) Se o valor p é maior que o nível de significância, remove-se a variável; 
+5) Ajusta-se novamente o modelo, agora sem a variável removida.
+
+#### Modelo 1
+
+Neste primeiro modelo, considera-se todas as variáveis independentes: **Administracao**, **PeD**, **Marketing**, e **Estado**.
+
+```{r}
+regressor = lm(formula = Lucro ~ .,
+               data = startup_training_set)
+summary(regressor)
+```
+
+#### Modelo 2
+
+Como no modelo passado, a variável **Administracao** teve o maior valor-p acima do nível de significância dentre as variáveis participantes do modelo, a retiramos e agora consideramos apenas **PeD**, **Marketing**, e **Estado**.
+
+```{r}
+regressor = lm(formula = Lucro ~ Marketing + PeD + Estado,
+               data = startup_training_set)
+summary(regressor)
+```
+
+#### Modelo 3
+
+Como no modelo passado, a variável **Estado** teve o maior valor-p acima do nível de significância dentre as variáveis participantes do modelo, a retiramos e agora consideramos apenas **PeD** e **Marketing**.
+
+```{r}
+regressor = lm(formula = Lucro ~ Marketing + PeD,
+               data = startup_training_set)
+summary(regressor)
+```
+
+#### Modelo 4
+
+Como no modelo passado, a variável **Marketing** teve o maior valor-p acima do nível de significância dentre as variáveis participantes do modelo, a retiramos e agora consideramos apenas **PeD**.
+
+```{r}
+regressor = lm(formula = Lucro ~ PeD,
+               data = startup_training_set)
+summary(regressor)
+```
+
+**Conclusão**: pela abordagem da **Backward Elimination**, chegamos ao modelo ideal apenas com a variável **PeD**.
+
+### Forward Elimination
+
+Agora, utilizaremos a abordagem "Forward Elimination" para verificar se esta diz que o mesmo modelo é o ideal. Esse método possui os seguintes passos:
+
+1) Define-se o nível de significância;
+2) Parte-se da suposição de que não há variável no modelo, apenas o intercepto;
+3) Adiciona-se uma variável de cada vez ao modelo, usando como critério a maior correlação para a menor.
+
+#### Modelo 1
+
+Para este modelo, vamos adicionar primeiro a variável **PeD**, já que ela foi a que teve a maior correlação com **Lucro** encontrada.
+
+```{r}
+regressor = lm(formula = Lucro ~ PeD,
+               data = startup_training_set)
+summary(regressor)
+```
+
+Como pudemos observar a partir da estatística F do modelo, e pelo valor-p que a variável **PeD** possui dentro do modelo, concluímos que ela é bastante significativa para o modelo.
+
+#### Modelo 2
+
+Para este modelo, vamos adicionar a variável **Marketing**, já que ela foi a que teve a segunda maior correlação com **Lucro** encontrada.
+
+```{r}
+regressor = lm(formula = Lucro ~ PeD + Marketing,
+               data = startup_training_set)
+summary(regressor)
+```
+
+Como pudemos perceber, a estatística F do modelo foi reduzida drasticamente ao adicionar a variável **Marketing** no modelo, e seu valor-p é *0,1*, maior do que o nível de significância definido, que é *0,05*. Logo, não vamos considerá-la como uma variável significativa para o nosso modelo, e vamos removê-la.
+
+**Conclusão**: pela abordagem da **Forward Elimination**, também chegamos ao modelo ideal apenas com a variável **PeD**, assim como foi na **Backward Elimination**.
