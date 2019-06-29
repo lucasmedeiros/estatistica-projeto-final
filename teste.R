@@ -1,32 +1,27 @@
-library(corrplot)
-library(dplyr)
-library(tidyr)
-library(gghighlight)
+library(tidyverse)
+library(stats)
+library(caTools)
+library(car)
 
-titanic_data  <- 
-  na.omit(read.csv("data/train.csv", stringsAsFactors = FALSE)) %>%
-  select(-c('Name', 'Ticket','Embarked','Cabin', 'PassengerId'))
+startup_dataset <- read_csv(here::here("data/50_startups.csv"),
+                            col_types = "dddcd")
 
-## Correlação de todas as variáveis
-corrplot(cor(titanic_data), method="pie", tl.col="black", type="lower")
+names(startup_dataset)[names(startup_dataset) == 'ReD'] <- 'PeD'
+names(startup_dataset)[names(startup_dataset) == 'Administration'] <- 'Administracao'
+names(startup_dataset)[names(startup_dataset) == 'State'] <- 'Estado'
+names(startup_dataset)[names(startup_dataset) == 'Profit'] <- 'Lucro'
 
-## Análise do gráfico acima
-# Escolhemos as três variáveis com maior R-squared (cor^2) para nossos modelos
+set.seed(100)
 
-## Correlações das variáveis escolhidas
-cor(titanic_data$Survived, titanic_data$Pclass)
-cor(titanic_data$Survived, titanic_data$Fare)
-cor(titanic_data$Survived, titanic_data$Sex)
+split = sample.split(startup_dataset$Lucro, SplitRatio = 0.8)
 
-# Montando histograma
-gather(titanic_data)%>%
-  ggplot(aes(value)) +
-    geom_histogram(bins = 10) +
-      facet_wrap(~key, scales = 'free_x')
+startup_training_set = subset(startup_dataset, split == TRUE)
+startup_test_set = subset(startup_dataset, split == FALSE)
 
-# Criando modelo de regressão linear e calculando o R2
-model <- lm(titanic_data$Survived ~ titanic_data$Sex + titanic_data$Pclass + titanic_data$Fare)
-rQuadrado <- summary(model)$r.squared
-rQuadrado
+regressor = lm(formula = Lucro ~ .,
+            data = startup_training_set)
+# summary(regressor)
 
-anova(model)
+step(regressor, direction = "both")
+
+

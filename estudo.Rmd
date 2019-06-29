@@ -1,7 +1,15 @@
 ---
 title: "Estudo a partir de dados da embarcação de pessoas no Titanic"
 author: "Jadson Luan, Jessé Souza e Lucas Medeiros"
-output: html_document
+date: "1 de julho de 2019"
+output: 
+  html_document:
+    code_folding: "hide"
+    toc: yes
+    toc_depth: 5
+    toc_float:
+      collapsed: no
+    df_print: paged
 ---
 
 ```{r setup, include=FALSE}
@@ -14,8 +22,9 @@ library(GGally)
 library(grid)
 library(gridExtra)
 library(broom)
-library(stats)
 library(ggplot2)
+# library(stats)
+
 titanic_data  <- 
   na.omit(read.csv("data/train.csv", stringsAsFactors = FALSE)) %>%
   select(-c('Name', 'Ticket','Embarked','Cabin', 'PassengerId'))
@@ -82,6 +91,7 @@ data.deads = data %>% filter(Survived == 0)
 
 # Análise descritiva
 ### Gráficos de barra (sobreviventes)
+
 ```{r, echo=FALSE, warning=FALSE}
 ggplot(gather(data.survivors %>% select(-c("Fare", "Age", "Survived"))), aes(value)) + 
   geom_histogram(stat="count") + 
@@ -90,6 +100,7 @@ ggplot(gather(data.survivors %>% select(-c("Fare", "Age", "Survived"))), aes(val
 ```
 
 ### Gráficos de barra (não-sobreviventes)
+
 ```{r, echo=FALSE, warning=FALSE}
 ggplot(gather(data.deads %>% select(-c("Fare", "Age", "Survived"))), aes(value)) + 
   geom_histogram(stat="count") + 
@@ -117,6 +128,7 @@ represent_discrete_variable=function(var1, var2 , coeff_bigger){
   text (AA$x , AA$y , AA$number )
 }
 ```
+
 
 ```{r, echo=FALSE}
 p1 <- ggplot(data, aes(x = Survived, y = Pclass)) + 
@@ -149,6 +161,7 @@ plot(data$Survived, data$Fare,
 
 
 ## Análise da correlação geral
+
 ```{r, echo=FALSE}
 # corrplot(cor(titanic_data), method="pie", tl.col="black", type="lower")
 titanic_clean_data <- titanic_data
@@ -161,6 +174,7 @@ titanic_clean_data %>%
 ```
 
 ## Correlações das variáveis selecionadas
+
 ```{r}
 cor(titanic_data$Survived, titanic_data$Pclass)
 cor(titanic_data$Survived, titanic_data$Fare)
@@ -168,6 +182,7 @@ cor(titanic_data$Survived, titanic_data$Sex)
 ```
 
 ## Análise das correlações das variáveis selecionadas
+
 ```{r, echo=FALSE}
 titanic_clean_data <- titanic_data %>% select('Survived', 'Pclass', 'Sex', 'Fare')
 titanic_clean_data %>%
@@ -193,6 +208,8 @@ fare_disp <-titanic_data %>%
 grid.arrange(sex_disp, pclass_disp, fare_disp, nrow = 1)
 ```
 
+# Criando modelo de regressão linear
+
 ## Iniciando um modelo de regressão com todas variáveis
 Usando a abordagem *backward* temos um modelo com as três variáveis preditivas selecionadas. 
 Iremos definir como nível de significância 5%.
@@ -211,7 +228,7 @@ anova(model)
 A partir dos dados obtidos pela análise ANOVA, é possível perceber que pelo menos uma das variáveis possui Pr(>F) maior do que O nível de significância, fazendo com que seja rejeitada a hipótese nula de que os coeficientes de todas as variáveis possuem valor nulo, resultando em uma regressão válida.
 
 ## Removendo a variável 'fare'
-Como a variável 'fare' possui um valor-p (~0,418) maior que o nível de significância (0,05) fixado, tiraremos ela do modelo e prosseguimos.
+Ao analisar as variáveis do modelo, primeiramente partimos da hipótese nula de que os coefientes do mesmo são iguais a zero, ou seja, a variável é irrelevante para o modelo. Com isso em mãos, verificamos o p-valor a fim de negar ou comprovar tal hipótese, ou seja, caso o p-valor da variável seja maior que o nível de significância (> 0.05), significa que a hipótese nula é verdadeira e com isso removemos a variável do modelo. A partir da análise dos p-valores das variáveis do modelo, podemos perceber que a variável 'Fare' possui um p-valor (~0.418) maior que o nível de significância fixado, então decidimos removê-la do nosso modelo.
 
 ## Novo modelo de regressão
 ```{r}
@@ -248,21 +265,22 @@ A partir do gráfico abaixo, é possivel analisar que os nossos resíduos se dis
 plot(model, which=1, col=c("black"))
 ```
 
-
-
-
 ### Teste de normalidade
 
-O nosso modelosegue uma distribuiçã normal, uma vez que os dados estão acompanhando razoavelmente a linha vermelha
+O nosso modelo segue uma distribuição normal, uma vez que os dados estão acompanhando razoavelmente a linha vermelha:
 
 ```{r}
 plot(model, which=2, col=c("black"))
 ```
 
 ### Teste De Shapiro-Wilk
+Usando o teste de Shapiro-Wilk para avaliar se a amostra tem distribuição normal, temos:
+
 ``` {r}
 shapiro.test(residuals(model))
 ```
+
+Como o valor p mostrado é significativamente menor que 0.05, então temos mais uma evidência de que o nosso modelo segue uma distribuição normal.
 
 ## Conclusão
 A partir do modelo obtido, é possivel analisar que caso o dado seja do sexo feminino (Sex = 1), a probabilidade do mesmo de sobreviver é muito maior, o que pode ser afetado com a diminuição da classe em que você estava viajando. Tais dados, mesmo possuindo apenas 36.83% de representatividade dentro da amostra, demonstra bem a situação real que ocorreu no navio, pois uma vez que foi comandada a evacuação, muitos dos oficiais usaram a regra de embarcar primeiro mulheres e crianças. 
