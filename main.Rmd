@@ -1,0 +1,17 @@
+---
+title: "Estudo a partir de dados da embarcação de pessoas no Titanic"
+author: "Jadson Luan, Jessé Souza e Lucas Medeiros"
+date: "1 de julho de 2019"
+output: 
+  html_document:
+    code_folding: "hide"
+    toc: yes
+    toc_depth: 5
+    toc_float:
+      collapsed: no
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+
+```
