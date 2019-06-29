@@ -3089,6 +3089,51 @@ summary(regressor)</code></pre>
 <p><strong>Conclusão</strong>: pela abordagem da <strong>Forward Elimination</strong>, também chegamos ao modelo ideal apenas com a variável <strong>PeD</strong>, assim como foi na <strong>Backward Elimination</strong>.</p>
 </div>
 </div>
+<div id="stepwise" class="section level3">
+<h3>Stepwise</h3>
+<p>Agora, para finalizar, vamos utilizar a abordagem <strong>Stepwise</strong> para seleção do melhor modelo e verificar se ela também diz que o modelo definido pelas duas abordagens anteriores é o mesmo. Veja abaixo a aplicação do método:</p>
+<pre class="r"><code>regressor = lm(formula = Lucro ~ .,
+               data = startup_training_set)
+step(regressor, direction = &quot;both&quot;)</code></pre>
+<pre><code>## Start:  AIC=741.83
+## Lucro ~ PeD + Administracao + Marketing + Estado
+## 
+##                 Df  Sum of Sq        RSS    AIC
+## - Estado         2 2.3592e+07 3.3813e+09 738.11
+## - Administracao  1 9.1651e+06 3.3669e+09 739.94
+## &lt;none&gt;                        3.3578e+09 741.83
+## - Marketing      1 1.8791e+08 3.5457e+09 742.00
+## - PeD            1 1.9293e+10 2.2651e+10 816.18
+## 
+## Step:  AIC=738.11
+## Lucro ~ PeD + Administracao + Marketing
+## 
+##                 Df  Sum of Sq        RSS    AIC
+## - Administracao  1 1.0113e+07 3.3915e+09 736.23
+## &lt;none&gt;                        3.3813e+09 738.11
+## - Marketing      1 2.3158e+08 3.6129e+09 738.76
+## + Estado         2 2.3592e+07 3.3578e+09 741.83
+## - PeD            1 2.0629e+10 2.4011e+10 814.52
+## 
+## Step:  AIC=736.23
+## Lucro ~ PeD + Marketing
+## 
+##                 Df  Sum of Sq        RSS    AIC
+## &lt;none&gt;                        3.3915e+09 736.23
+## - Marketing      1 2.2160e+08 3.6131e+09 736.76
+## + Administracao  1 1.0113e+07 3.3813e+09 738.11
+## + Estado         2 2.4540e+07 3.3669e+09 739.94
+## - PeD            1 2.3009e+10 2.6400e+10 816.31</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = Lucro ~ PeD + Marketing, data = startup_training_set)
+## 
+## Coefficients:
+## (Intercept)          PeD    Marketing  
+##   4.527e+04    8.118e-01    2.946e-02</code></pre>
+<p>Como podemos observar, a partir do método <em>stepwise</em>, percebemos que a seleção do modelo ideal para representação dos dados foi o que contém <strong>PeD</strong> e <strong>Marketing</strong>.</p>
+<p><strong>Conclusão</strong>: pela abordagem da <strong>Stepwise</strong>, chegamos a um modelo ideal com as variáveis <strong>PeD</strong> e <strong>Marketing</strong>, diferente do obtido na <strong>Backward Elimination</strong> e na <strong>Forward Elimination</strong>.</p>
+</div>
 </div>
 
 

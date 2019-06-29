@@ -14,16 +14,7 @@ output:
 
 ```{r setup, include=FALSE}
 library(tidyverse)
-library(corrplot)
-library(dplyr)
-library(tidyr)
-library(gghighlight)
-library(GGally)
-library(grid)
-library(gridExtra)
-library(broom)
 library(stats)
-library(ggplot2)
 library(caTools)
 library(car)
 
@@ -134,3 +125,17 @@ summary(regressor)
 Como pudemos perceber, a estatística F do modelo foi reduzida drasticamente ao adicionar a variável **Marketing** no modelo, e seu valor-p é *0,1*, maior do que o nível de significância definido, que é *0,05*. Logo, não vamos considerá-la como uma variável significativa para o nosso modelo, e vamos removê-la.
 
 **Conclusão**: pela abordagem da **Forward Elimination**, também chegamos ao modelo ideal apenas com a variável **PeD**, assim como foi na **Backward Elimination**.
+
+### Stepwise
+
+Agora, para finalizar, vamos utilizar a abordagem **Stepwise** para seleção do melhor modelo e verificar se ela também diz que o modelo definido pelas duas abordagens anteriores é o mesmo. Veja abaixo a aplicação do método:
+
+```{r}
+regressor = lm(formula = Lucro ~ .,
+               data = startup_training_set)
+step(regressor, direction = "both")
+```
+
+Como podemos observar, a partir do método *stepwise*, percebemos que a seleção do modelo ideal para representação dos dados foi o que contém **PeD** e **Marketing**.
+
+**Conclusão**: pela abordagem da **Stepwise**, chegamos a um modelo ideal com as variáveis **PeD** e **Marketing**, diferente do obtido na **Backward Elimination** e na **Forward Elimination**.
