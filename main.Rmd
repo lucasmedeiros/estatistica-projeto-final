@@ -13,5 +13,14 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-
+library(tidyverse)
+library(corrplot)
+library(dplyr)
+library(tidyr)
+library(gghighlight)
+library(GGally)
+library(grid)
+library(gridExtra)
+library(broom)
+library(ggplot2)
 ```
