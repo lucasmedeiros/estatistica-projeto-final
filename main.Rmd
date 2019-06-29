@@ -23,4 +23,43 @@ library(grid)
 library(gridExtra)
 library(broom)
 library(ggplot2)
+library(Amelia)
+
+training.data.raw <- read.csv("data/pure-train.csv",header=T,na.strings=c(""))
+```
+
+# 1. Introdução
+  Para esse estudo, foi utilizado um arquivo contendo dados de 891 tripulantes do navio Titanic, que afundou na madrugado do dia 15 de abril de 1912, logo após ter colidido com um iceberg, onde das 2224 pessoas a bordo do navio, entre tripulantes, operários e  oficiais, somente 710 sobreviveram. Nosso objetivo, então, foi a partir da análise dos dados de 7 das variáveis presentes nesse dataset, identificar se houve influencia de um ou mais fatores na sobrevivência, ou não, do passageiro.
+  
+# 2. Pré-processamento dos dados
+É importante que antes de começar a analisar os dados, levemos em consideração que podem haver dados corrompidos ou ausentes. Sendo assim, realizamos um pré-processamento dos dados dessa _dataset_
+
+## 2.1. Análise dos dados ausentes
+```{r}
+missmap(training.data.raw, main = "Análise de valores ausentes por variável")
+```
+
+## 2.2. Higienização do _dataset_
+### 2.2.3. Extraindo um bom subconjunto
+  Pela análise anterior, notamos que a variável **Cabin** possui muitos valores ausentes e isso pode prejudicar nossa análise, então iremos tirá-la. Também removeremos as variáveis **PassengerId** e **Ticket** pois são usadas apenas para indexação.
+```{r}
+data <- subset(training.data.raw, select = c(2,3,5,6,7,8,10,12))
+missmap(data, main = "Análise de valores ausentes por variável")
+```
+
+### 2.2.4. Normalização de valores ausentes
+  Apesar da remoção da variável **Cabin** que possuía muitos valores faltantes, ainda não temos um dataset bom. Há ainda variáveis que faltam valores, porém em menores quantidades. 
+  Para os dados ausentes de **Age** iremos substituí-los pela média das idades observadas, assim não afetará a média geral. Já para os de **Embarked**, como são pouquissimos valores ausentes, iremos apenas remover as linhas que não possuem o valor observado dessa variável.
+  
+```{r}
+data$Age[is.na(data$Age)] <- mean(data$Age,na.rm=T)
+
+data <- data[!is.na(data$Embarked),]
+rownames(data) <- NULL
+```
+
+### 2.2.5. Conjunto de dados formatado
+Por fim, chegamos a um bom conjunto de dados. Note que alcançamos um _dataset_ sem valores ausentes, isso nos permitirá fazer uma análise mais **consistente** e **precisa**.
+```{r}
+missmap(data, main = "Análise de valores ausentes por variável")
 ```
