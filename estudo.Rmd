@@ -91,7 +91,6 @@ data.deads = data %>% filter(Survived == 0)
 
 # Análise descritiva
 ### Gráficos de barra (sobreviventes)
-
 ```{r, echo=FALSE, warning=FALSE}
 ggplot(gather(data.survivors %>% select(-c("Fare", "Age", "Survived"))), aes(value)) + 
   geom_histogram(stat="count") + 
