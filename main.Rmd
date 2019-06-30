@@ -168,7 +168,7 @@ grid.arrange(p1,p2,ncol=2)
 ```
 
   Analisando a dispersão da variável **Sex** em relação a variável **Survived**, assim como nos gráficos de barras, é possivel novamente inferir de que deve existir uma correlação entre a sobrevivência do individuo e seu sexo.  
-  
+
 #### 3.2.3. SibSp x Survived
 
 ```{r,warning=FALSE}
@@ -251,22 +251,9 @@ grid.arrange(p1,p2,ncol=2)
 
 ```
 
-## 3.4 Análise da correlação geral
-
-```{r, warning=FALSE}
-# corrplot(cor(titanic_data), method="pie", tl.col="black", type="lower")
-#titanic_clean_data <- data
-#titanic_clean_data %>%
-#  ggcorr(palette = "RdBu",
-#         color = "grey50",
-#         label = TRUE, hjust = 1,
-#         label_size = 3, size = 4,
-#        nbreaks = 5, layout.exp = 7)
-```
-
 # 4. Seleção de um modelo
 
-Agora, objetivando encontrar o melhor modelo no qual as variáveis impactam na inferência da sobrevivência de um passageiro do Titanic, podemos selecionar utilizando diferentes tipos de abordagens, por exemplo, **Backward Elimination**, **Forward Elimination** e **Stewise**.
+Agora, objetivando encontrar o melhor modelo no qual as variáveis impactam na inferência da sobrevivência de um passageiro do Titanic, podemos selecionar utilizando diferentes tipos de abordagens, por exemplo, **Backward Elimination**, **Forward Elimination** e **Stepwise**.
 
 **OBS:** o nível de significância  que vamos adotar para a pesquisa é 5%.
 
