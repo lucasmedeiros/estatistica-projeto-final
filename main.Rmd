@@ -128,26 +128,39 @@ missmap(data, main = "Análise de valores ausentes por variável")
   data.deads = data %>% filter(Survived == 0)
 ```
 
-### 3.2.1 Sobreviventes
+### 3.2.1 Sobreviventes x Não-Sobreviventes
   
 ```{r warning=FALSE}
-  ggplot(gather(data.survivors %>% dplyr::select(-c("Fare", "Age", "Survived"))), aes(value)) + 
+p1 <-  ggplot(gather(data.survivors %>% dplyr::select(-c("Fare", "Age", "Survived"))), aes(value)) + 
   geom_histogram(stat="count") + 
   labs(x = "", y = "") +
   facet_wrap(~key, scales = 'free_x')
+
+p2 <-  ggplot(gather(data.deads %>% dplyr::select(-c("Fare", "Age", "Survived"))), aes(value)) + 
+  geom_histogram(stat="count") + 
+  labs(x = "", y = "") +
+  facet_wrap(~key, scales = 'free_x')
+
+grid.arrange(p1,p2,ncol=2)
+
+p3 <-  ggplot(gather(data.survivors %>% dplyr::select("Embarked")), aes(value)) + 
+  geom_histogram(stat="count") + 
+  labs(x = "", y = "",title="Sobreviventes") +
+  facet_wrap(~key, scales = 'free_x')
+
+p4 <-  ggplot(gather(data.deads %>% dplyr::select("Embarked")), aes(value)) + 
+  geom_histogram(stat="count") + 
+  labs(x = "", y = "",title="Não-Sobreviventes") +
+  facet_wrap(~key, scales = 'free_x')
+
+grid.arrange(p3,p4,ncol=2)
+
 ```
 
 #### Análise Parcial
   A partir da análise dos gráficos de barras dos sobreviventes, podemos inferir algumas conclusões acerca da nossa amostra. A primeira é de que grande parte das pessoas que sobreviveram não estavam viajando com seus filhos ou seus pais (**Parch**), também podemos verificar de que grande parte dos sobreviventes estavam ou viajando sozinhos ou acompanhando de seu cônjuge ou de um filho(a)/neto(a). Os gráficos de **Sex** também são muito importantes para a análise da nossa amostra, uma vez que o número de individuos do sexo Feminino que sobreviveram é o dobro do número de individuos do sexo masculino. 
 
 ### 3.1.2 Não-Sobreviventes
-
-```{r, echo=FALSE, warning=FALSE}
-  ggplot(gather(data.deads %>% dplyr::select(-c("Fare", "Age", "Survived"))), aes(value)) + 
-  geom_histogram(stat="count") + 
-  labs(x = "", y = "") +
-  facet_wrap(~key, scales = 'free_x')
-```
 
 #### Análise Parcial
   Analisando os gráficos dos indivíduos que não-sobreviveram, analisando também com os gráficos dos sobreviventes, podemos perceber que alguns gráficos permaneceram semelhantes, como por exemplo, os gráficos das variáveis **Embarked**, **SibSp** e **Parch**, tal comportamento pode ser um indicio de que essas variáveis não possuam uma correlação alta com a probabilidade de sobrevivência do individuo. Entretanto, alguns gráficos tiveram sua aparência bastante modificada, como nos casos das variáveis **Sex** e **Pclass**, uma vez que no caso da variável Sex, por exemplo, no subgrupo dos sobreviventes, o número de individuos do sexo feminino era mais que o dobro comparado aos individuos do sexo masculino, algo que se inverte completamente quando comparamos com o subgrupo do não-sobreviventes, onde o número de indivíduos do sexo masculino é superior a 5 vezes o número de individuos do sexo feminino.     
@@ -156,45 +169,13 @@ missmap(data, main = "Análise de valores ausentes por variável")
   A seguir analisaremos a dispersão das variáveis em função da varíavel **Survived** a qual estamos tentando predizer. Lembrando que a variável recebe "1" quando o invididuo sobreviveu e "0" quando não sobreviveu.  
   
 #### 3.3.1 PClass x Survived
-```{r, warning=FALSE}
-AA=xyTable(data$Survived, data$Pclass)
- 
-coeff_bigger=0.05
-plot(AA$x , AA$y , cex=AA$number*coeff_bigger  , pch=16 , col=rgb(0,0,1,0.5) , xlab= "Survived" , ylab="Pclass" , xlim=c(0,1) , ylim=c(0,6) )
-text (AA$x , AA$y , AA$number)
-``` 
-
-```{r, echo=FALSE}
-represent_discrete_variable=function(var1, var2 , coeff_bigger){
-  AA=xyTable(var1,var2)
-  plot(AA$x , AA$y , cex=AA$number*coeff_bigger  , pch=16 , col="chocolate1" , xlab= "Survived" , ylab="Pclass" )
-  text (AA$x , AA$y , AA$number )
-}
-```
-
   Na dispersão da variável **PClass** em relação a variável **Survived**, é possível perceber que grande parte dos individuos que não sobreviveram eram da classe baixa. Entretanto, tal discrepância não existe caso olhemos para o grupo dos individios que sobreviveram.
 
 #### 3.3.2 Sex x Survived
 
-```{r}
-AA=xyTable(data$Survived, data$Sex)
-
-coeff_bigger=0.04
-plot(AA$x , AA$y , cex=AA$number*coeff_bigger  , pch=16 , col=rgb(0,0,1,0.5) , xlab= "Survived" , ylab="Sexo" , xlim=c(0,1) , ylim=c(0,3) )
-text (AA$x , AA$y , AA$number )
-
-
-```
   Analisando a dispersão da variável **Sex** em relação a variável **Survived**, assim como nos gráficos de barras, é possivel novamente inferir de que deve existir uma correlação entre a sobrevivência do individuo e seu sexo.  
   
 #### 3.3.3 SibSp x Survived
-```{r}
-AA=xyTable(data$Survived, data$SibSp)
-
-coeff_bigger=0.03
-plot(AA$x , AA$y , cex=AA$number*coeff_bigger  , pch=16 , col=rgb(0,0,1,0.5) , xlab= "Survived" , ylab="número de irmãos/cônjuges do passageiro abordo" , xlim=c(0,1) , ylim=c(0,6))
-text (AA$x , AA$y , AA$number )
-```
   Pela dispersão da variável **SibSp** em relação a variável **Survived**, é possivel perceber de não deve existir uma correlação alta, uma vez que existe uma semelhança entre as dispersões da variável **SibSp** quando o **Survived** possui valor "0" e "1".
 
 #### 3.3.4 Parch x Survived
@@ -215,28 +196,19 @@ grid.arrange(p1,p2, ncol=2)
   Assim como no caso anterior, a dispersão entre as variáveis **Parch** e **Survived** não parecem ter uma correlação alta devido a semelhança entre as correlações.  
 
 #### 3.3.5 Fare x Survived
-```{r}
-AA=xyTable(data$Survived, data$Fare)
-
-coeff_bigger=0.4
-
-plot(AA$x , AA$y , cex=AA$number*coeff_bigger  , pch=19 , col=rgb(0,1,0,0.5) , xlab= "Survived" , ylab="Tarifa paga" , xlim=c(0,1) , ylim=c(0,100))
-
-
-```
   É possivel,a partir da análise da dispersão acima, perceber que existe uma discrepância muito menor entre as tarifas pagas entre os individuos que sobreviveram do que no subgrupo dos individuos que não sobreviveram. Isso pode representar uma boa correlação entre as variáveis **Fare** e **Survived**.
   
 ## 3.4 Análise da correlação geral
 
 ```{r, warning=FALSE}
 # corrplot(cor(titanic_data), method="pie", tl.col="black", type="lower")
-titanic_clean_data <- data
-titanic_clean_data %>%
-  ggcorr(palette = "RdBu",
-         color = "grey50",
-         label = TRUE, hjust = 1,
-         label_size = 3, size = 4,
-         nbreaks = 5, layout.exp = 7)
+#titanic_clean_data <- data
+#titanic_clean_data %>%
+#  ggcorr(palette = "RdBu",
+#         color = "grey50",
+#         label = TRUE, hjust = 1,
+#         label_size = 3, size = 4,
+#        nbreaks = 5, layout.exp = 7)
 ```
 
 # 4. Seleção de um modelo
