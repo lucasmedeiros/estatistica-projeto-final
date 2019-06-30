@@ -36,7 +36,8 @@ training.data.raw <- read.csv("data/pure-train.csv",header=T,na.strings=c(""))
 
 ### 1.2 Regressão Logística
 
-  Uma **regressão linear logística**, ou **Regressão Bernoulli**, é um tipo de modelo linear generlizado onde a variável resposta é binária, ou seja, pode assumir dois valores possíveis, denominados "fracasso" e "sucesso", esse tipo de modelo é muito utilizado na área da saúde, onde o referido modelo pode ser usado para estimar a probabilidade do paciente aderir a um certo medicamento, por exemplo (exemplo: https://www.scielosp.org/article/rsp/1995.v29n4/283-289/pt/). Como a nossa variável resposta **Survived** não segue uma distribuição normal, mas sim uma distribuição de Bernoulli ("sucesso"= sobrevivencia e "fracasso" não-sobrevivência), não é possível utilizar a regressão linear simples/múltipla, restando a nós a utilização da **Regressão Logística Múltipla**.  
+  Uma **regressão linear logística**, ou **Regressão Bernoulli**, é um tipo de modelo linear generlizado onde a variável resposta é binária, ou seja, pode assumir dois valores possíveis, denominados "fracasso" e "sucesso". A regressão logística utiliza a função de ligação **logic**, possibilitando assim a interpretação dos resultados em função da Razão de Chances(Odds Ratio), a **logic** é importante para delimitar os valores possíveis para a variável de interesse, a função de ligação **logic** delimita ao intervalo de 0 e 1.\
+  esse tipo de modelo é muito utilizado na área da saúde, onde pode ser usado para estimar a probabilidade do paciente aderir a um certo medicamento, por exemplo (exemplo: https://www.scielosp.org/article/rsp/1995.v29n4/283-289/pt/). Como a nossa variável resposta **Survived** não segue uma distribuição normal, mas sim uma distribuição de Bernoulli ("sucesso"= sobrevivencia e "fracasso" não-sobrevivência), não é possível utilizar a regressão linear simples/múltipla, restando a nós a utilização da **Regressão Logística Múltipla**.  
 
 # 2. Pré-processamento dos dados
 É importante que antes de começar a analisar os dados, levemos em consideração que podem haver dados corrompidos ou ausentes. Sendo assim, realizamos um pré-processamento dos dados dessa _dataset_
@@ -65,6 +66,8 @@ data$Age[is.na(data$Age)] <- mean(data$Age,na.rm=T)
 
 data <- data[!is.na(data$Embarked),]
 rownames(data) <- NULL
+
+data$Pclass <- factor(data$Pclass)
 ```
 
 ### 2.2.5. Conjunto de dados formatado
@@ -126,78 +129,128 @@ missmap(data, main = "Análise de valores ausentes por variável")
 ```{r include=FALSE}
   data.survivors = data %>% filter(Survived == 1)
   data.deads = data %>% filter(Survived == 0)
+  
 ```
 
-### 3.2.1 Sobreviventes x Não-Sobreviventes
-  
-```{r warning=FALSE}
-p1 <-  ggplot(gather(data.survivors %>% dplyr::select(-c("Fare", "Age", "Survived"))), aes(value)) + 
-  geom_histogram(stat="count") + 
-  labs(x = "", y = "") +
-  facet_wrap(~key, scales = 'free_x')
+### 3.2.1. PClass x Survived
 
-p2 <-  ggplot(gather(data.deads %>% dplyr::select(-c("Fare", "Age", "Survived"))), aes(value)) + 
-  geom_histogram(stat="count") + 
-  labs(x = "", y = "") +
-  facet_wrap(~key, scales = 'free_x')
+```{r,warning=FALSE}
+
+p1 <-  ggplot(data.survivors, aes(x=Pclass)) + geom_bar(fill=rgb(0.2,0.5,1, 1)) +
+  labs(x = "", y = "",title="Sobreviventes") +
+  scale_fill_brewer(palette = "Set1")
+
+p2 <- ggplot(data.deads, aes(x=Pclass)) + geom_bar(fill=rgb(0.2,0.5,1, 1)) +
+  labs(x = "", y = "",title="Não-Sobreviventes") +
+  scale_fill_brewer(palette = "Set1")
+
 
 grid.arrange(p1,p2,ncol=2)
 
-p3 <-  ggplot(gather(data.survivors %>% dplyr::select("Embarked")), aes(value)) + 
-  geom_histogram(stat="count") + 
+```
+
+  Na dispersão da variável **PClass** em relação a variável **Survived**, é possível perceber que grande parte dos individuos que não sobreviveram eram da classe baixa. Entretanto, tal discrepância não existe caso olhemos para o grupo dos individios que sobreviveram.
+
+#### 3.2.2. Sex x Survived
+
+```{r,warning=FALSE}
+
+p1 <-  ggplot(data.survivors, aes(x=Sex)) + geom_bar(fill=rgb(0.2,0.5,1, 1)) +
   labs(x = "", y = "",title="Sobreviventes") +
-  facet_wrap(~key, scales = 'free_x')
+  scale_fill_brewer(palette = "Set1")
 
-p4 <-  ggplot(gather(data.deads %>% dplyr::select("Embarked")), aes(value)) + 
-  geom_histogram(stat="count") + 
+p2 <- ggplot(data.deads, aes(x=Sex)) + geom_bar(fill=rgb(0.2,0.5,1, 1)) +
   labs(x = "", y = "",title="Não-Sobreviventes") +
-  facet_wrap(~key, scales = 'free_x')
+  scale_fill_brewer(palette = "Set1")
 
-grid.arrange(p3,p4,ncol=2)
+grid.arrange(p1,p2,ncol=2)
 
 ```
 
-#### Análise Parcial
-  A partir da análise dos gráficos de barras dos sobreviventes, podemos inferir algumas conclusões acerca da nossa amostra. A primeira é de que grande parte das pessoas que sobreviveram não estavam viajando com seus filhos ou seus pais (**Parch**), também podemos verificar de que grande parte dos sobreviventes estavam ou viajando sozinhos ou acompanhando de seu cônjuge ou de um filho(a)/neto(a). Os gráficos de **Sex** também são muito importantes para a análise da nossa amostra, uma vez que o número de individuos do sexo Feminino que sobreviveram é o dobro do número de individuos do sexo masculino. 
-
-### 3.1.2 Não-Sobreviventes
-
-#### Análise Parcial
-  Analisando os gráficos dos indivíduos que não-sobreviveram, analisando também com os gráficos dos sobreviventes, podemos perceber que alguns gráficos permaneceram semelhantes, como por exemplo, os gráficos das variáveis **Embarked**, **SibSp** e **Parch**, tal comportamento pode ser um indicio de que essas variáveis não possuam uma correlação alta com a probabilidade de sobrevivência do individuo. Entretanto, alguns gráficos tiveram sua aparência bastante modificada, como nos casos das variáveis **Sex** e **Pclass**, uma vez que no caso da variável Sex, por exemplo, no subgrupo dos sobreviventes, o número de individuos do sexo feminino era mais que o dobro comparado aos individuos do sexo masculino, algo que se inverte completamente quando comparamos com o subgrupo do não-sobreviventes, onde o número de indivíduos do sexo masculino é superior a 5 vezes o número de individuos do sexo feminino.     
-
-## 3.3 Dispersão das variáveis
-  A seguir analisaremos a dispersão das variáveis em função da varíavel **Survived** a qual estamos tentando predizer. Lembrando que a variável recebe "1" quando o invididuo sobreviveu e "0" quando não sobreviveu.  
-  
-#### 3.3.1 PClass x Survived
-  Na dispersão da variável **PClass** em relação a variável **Survived**, é possível perceber que grande parte dos individuos que não sobreviveram eram da classe baixa. Entretanto, tal discrepância não existe caso olhemos para o grupo dos individios que sobreviveram.
-
-#### 3.3.2 Sex x Survived
-
   Analisando a dispersão da variável **Sex** em relação a variável **Survived**, assim como nos gráficos de barras, é possivel novamente inferir de que deve existir uma correlação entre a sobrevivência do individuo e seu sexo.  
   
-#### 3.3.3 SibSp x Survived
+#### 3.2.3. SibSp x Survived
+
+```{r,warning=FALSE}
+
+p1 <-  ggplot(data.survivors, aes(x=SibSp)) + geom_bar(fill=rgb(0.2,0.5,1, 1)) +
+  labs(x = "", y = "",title="Sobreviventes") +
+  scale_fill_brewer(palette = "Set1")
+
+p2 <- ggplot(data.deads, aes(x=SibSp)) + geom_bar(fill=rgb(0.2,0.5,1, 1)) +
+  labs(x = "", y = "",title="Não-Sobreviventes") +
+  scale_fill_brewer(palette = "Set1")
+
+grid.arrange(p1,p2,ncol=2)
+
+```
+
   Pela dispersão da variável **SibSp** em relação a variável **Survived**, é possivel perceber de não deve existir uma correlação alta, uma vez que existe uma semelhança entre as dispersões da variável **SibSp** quando o **Survived** possui valor "0" e "1".
 
-#### 3.3.4 Parch x Survived
-```{r}
-p1 <- ggplot(gather(data.survivors %>% dplyr::select("Parch")), aes(value)) + 
-  geom_histogram(stat="count") + 
-  labs(x = "", y = "") +
-  facet_wrap(~key, scales = 'free_x')
+#### 3.2.4. Parch x Survived
+```{r,warning=FALSE}
 
-p2 <- ggplot(gather(data.survivors %>% dplyr::select("Parch")), aes(value)) + 
-  geom_histogram(stat="count") + 
-  labs(x = "", y = "") +
-  facet_wrap(~key, scales = 'free_x')
+p1 <-  ggplot(data.survivors, aes(x=Parch)) + geom_bar(fill=rgb(0.2,0.5,1, 1)) +
+  labs(x = "", y = "",title="Sobreviventes") +
+  scale_fill_brewer(palette = "Set1")
+
+p2 <- ggplot(data.deads, aes(x=Parch)) + geom_bar(fill=rgb(0.2,0.5,1, 1)) +
+  labs(x = "", y = "",title="Não-Sobreviventes") +
+  scale_fill_brewer(palette = "Set1")
 
 grid.arrange(p1,p2, ncol=2)
 
 ```
   Assim como no caso anterior, a dispersão entre as variáveis **Parch** e **Survived** não parecem ter uma correlação alta devido a semelhança entre as correlações.  
 
-#### 3.3.5 Fare x Survived
+#### 3.2.5. Fare x Survived
+
+```{r,warning=FALSE}
+
+p1 <- ggplot(data.survivors, aes(Fare)) + 
+  geom_histogram(fill=rgb(0.2,0.5,1, 1), binwidth = 20, color="white") + 
+  labs(x = "", y = "", title="Sobreviventes")
+
+p2 <- ggplot(data.deads, aes(Fare)) + 
+  geom_histogram(fill=rgb(0.2,0.5,1, 1), binwidth = 20,  color="white") + 
+  labs(x = "", y = "", title="Não-Sobreviventes")
+
+grid.arrange(p1,p2, ncol=2)
+```
   É possivel,a partir da análise da dispersão acima, perceber que existe uma discrepância muito menor entre as tarifas pagas entre os individuos que sobreviveram do que no subgrupo dos individuos que não sobreviveram. Isso pode representar uma boa correlação entre as variáveis **Fare** e **Survived**.
   
+#### 3.2.6. Embarked x Survived
+
+```{r,warning=FALSE}
+
+p1 <-  ggplot(data.survivors, aes(x=Embarked)) + geom_bar(fill=rgb(0.2,0.5,1, 1)) +
+  labs(x = "", y = "",title="Sobreviventes") +
+  scale_fill_brewer(palette = "Set1")
+
+p2 <- ggplot(data.deads, aes(x=Embarked)) + geom_bar(fill=rgb(0.2,0.5,1, 1)) +
+  labs(x = "", y = "",title="Não-Sobreviventes") +
+  scale_fill_brewer(palette = "Set1")
+
+grid.arrange(p1,p2,ncol=2)
+
+```
+
+#### 3.2.7. Age x Survived
+
+```{r,warning=FALSE}
+
+p1 <-  ggplot(data.survivors, aes(x=Age)) + geom_bar(fill=rgb(0.2,0.5,1, 1)) +
+  labs(x = "", y = "",title="Sobreviventes") +
+  scale_fill_brewer(palette = "Set1")
+
+p2 <- ggplot(data.deads, aes(x=Age)) + geom_bar(fill=rgb(0.2,0.5,1, 1)) +
+  labs(x = "", y = "",title="Não-Sobreviventes") +
+  scale_fill_brewer(palette = "Set1")
+
+grid.arrange(p1,p2,ncol=2)
+
+```
+
 ## 3.4 Análise da correlação geral
 
 ```{r, warning=FALSE}
