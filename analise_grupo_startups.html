@@ -2916,185 +2916,10 @@ div.tocify {
 <li>Se o valor p é maior que o nível de significância, remove-se a variável;</li>
 <li>Ajusta-se novamente o modelo, agora sem a variável removida.</li>
 </ol>
-<div id="modelo-1" class="section level4">
-<h4>Modelo 1</h4>
-<p>Neste primeiro modelo, considera-se todas as variáveis independentes: <strong>Administracao</strong>, <strong>PeD</strong>, <strong>Marketing</strong>, e <strong>Estado</strong>.</p>
-<pre class="r"><code>regressor = lm(formula = Lucro ~ .,
-               data = startup_training_set)
-summary(regressor)</code></pre>
-<pre><code>## 
-## Call:
-## lm(formula = Lucro ~ ., data = startup_training_set)
-## 
-## Residuals:
-##    Min     1Q Median     3Q    Max 
-## -32380  -4586   -190   4940  20038 
-## 
-## Coefficients:
-##                  Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)     4.359e+04  8.111e+03   5.374 5.61e-06 ***
-## PeD             8.146e-01  5.828e-02  13.977 1.18e-15 ***
-## Administracao   1.858e-02  6.098e-02   0.305    0.762    
-## Marketing       2.873e-02  2.083e-02   1.379    0.177    
-## EstadoFlorida  -2.938e+02  3.871e+03  -0.076    0.940    
-## EstadoNew York -1.878e+03  4.104e+03  -0.458    0.650    
-## ---
-## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-## 
-## Residual standard error: 9938 on 34 degrees of freedom
-## Multiple R-squared:  0.9496, Adjusted R-squared:  0.9421 
-## F-statistic:   128 on 5 and 34 DF,  p-value: &lt; 2.2e-16</code></pre>
-</div>
-<div id="modelo-2" class="section level4">
-<h4>Modelo 2</h4>
-<p>Como no modelo passado, a variável <strong>Administracao</strong> teve o maior valor-p acima do nível de significância dentre as variáveis participantes do modelo, a retiramos e agora consideramos apenas <strong>PeD</strong>, <strong>Marketing</strong>, e <strong>Estado</strong>.</p>
-<pre class="r"><code>regressor = lm(formula = Lucro ~ Marketing + PeD + Estado,
-               data = startup_training_set)
-summary(regressor)</code></pre>
-<pre><code>## 
-## Call:
-## lm(formula = Lucro ~ Marketing + PeD + Estado, data = startup_training_set)
-## 
-## Residuals:
-##    Min     1Q Median     3Q    Max 
-## -32337  -4930    376   5193  20149 
-## 
-## Coefficients:
-##                  Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)     4.579e+04  3.654e+03  12.531  1.7e-14 ***
-## Marketing       2.722e-02  1.997e-02   1.363    0.181    
-## PeD             8.198e-01  5.497e-02  14.912  &lt; 2e-16 ***
-## EstadoFlorida  -2.213e+02  3.813e+03  -0.058    0.954    
-## EstadoNew York -1.884e+03  4.050e+03  -0.465    0.645    
-## ---
-## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-## 
-## Residual standard error: 9808 on 35 degrees of freedom
-## Multiple R-squared:  0.9494, Adjusted R-squared:  0.9436 
-## F-statistic: 164.3 on 4 and 35 DF,  p-value: &lt; 2.2e-16</code></pre>
-</div>
-<div id="modelo-3" class="section level4">
-<h4>Modelo 3</h4>
-<p>Como no modelo passado, a variável <strong>Estado</strong> teve o maior valor-p acima do nível de significância dentre as variáveis participantes do modelo, a retiramos e agora consideramos apenas <strong>PeD</strong> e <strong>Marketing</strong>.</p>
-<pre class="r"><code>regressor = lm(formula = Lucro ~ Marketing + PeD,
-               data = startup_training_set)
-summary(regressor)</code></pre>
-<pre><code>## 
-## Call:
-## lm(formula = Lucro ~ Marketing + PeD, data = startup_training_set)
-## 
-## Residuals:
-##    Min     1Q Median     3Q    Max 
-## -31922  -4693   -223   5904  18785 
-## 
-## Coefficients:
-##              Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept) 4.527e+04  3.243e+03  13.961 2.54e-16 ***
-## Marketing   2.946e-02  1.895e-02   1.555    0.128    
-## PeD         8.118e-01  5.124e-02  15.844  &lt; 2e-16 ***
-## ---
-## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-## 
-## Residual standard error: 9574 on 37 degrees of freedom
-## Multiple R-squared:  0.9491, Adjusted R-squared:  0.9463 
-## F-statistic: 344.7 on 2 and 37 DF,  p-value: &lt; 2.2e-16</code></pre>
-</div>
-<div id="modelo-4" class="section level4">
-<h4>Modelo 4</h4>
-<p>Como no modelo passado, a variável <strong>Marketing</strong> teve o maior valor-p acima do nível de significância dentre as variáveis participantes do modelo, a retiramos e agora consideramos apenas <strong>PeD</strong>.</p>
-<pre class="r"><code>regressor = lm(formula = Lucro ~ PeD,
-               data = startup_training_set)
-summary(regressor)</code></pre>
-<pre><code>## 
-## Call:
-## lm(formula = Lucro ~ PeD, data = startup_training_set)
-## 
-## Residuals:
-##    Min     1Q Median     3Q    Max 
-## -32393  -4874    134   5177  18628 
-## 
-## Coefficients:
-##              Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept) 4.707e+04  3.085e+03   15.26   &lt;2e-16 ***
-## PeD         8.724e-01  3.390e-02   25.73   &lt;2e-16 ***
-## ---
-## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-## 
-## Residual standard error: 9751 on 38 degrees of freedom
-## Multiple R-squared:  0.9457, Adjusted R-squared:  0.9443 
-## F-statistic: 662.2 on 1 and 38 DF,  p-value: &lt; 2.2e-16</code></pre>
-<p><strong>Conclusão</strong>: pela abordagem da <strong>Backward Elimination</strong>, chegamos ao modelo ideal apenas com a variável <strong>PeD</strong>.</p>
-</div>
-</div>
-<div id="forward-elimination" class="section level3">
-<h3>Forward Elimination</h3>
-<p>Agora, utilizaremos a abordagem “Forward Elimination” para verificar se esta diz que o mesmo modelo é o ideal. Esse método possui os seguintes passos:</p>
-<ol style="list-style-type: decimal">
-<li>Define-se o nível de significância;</li>
-<li>Parte-se da suposição de que não há variável no modelo, apenas o intercepto;</li>
-<li>Adiciona-se uma variável de cada vez ao modelo, usando como critério a maior correlação para a menor.</li>
-</ol>
-<div id="modelo-1-1" class="section level4">
-<h4>Modelo 1</h4>
-<p>Para este modelo, vamos adicionar primeiro a variável <strong>PeD</strong>, já que ela foi a que teve a maior correlação com <strong>Lucro</strong> encontrada.</p>
-<pre class="r"><code>regressor = lm(formula = Lucro ~ PeD,
-               data = startup_training_set)
-summary(regressor)</code></pre>
-<pre><code>## 
-## Call:
-## lm(formula = Lucro ~ PeD, data = startup_training_set)
-## 
-## Residuals:
-##    Min     1Q Median     3Q    Max 
-## -32393  -4874    134   5177  18628 
-## 
-## Coefficients:
-##              Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept) 4.707e+04  3.085e+03   15.26   &lt;2e-16 ***
-## PeD         8.724e-01  3.390e-02   25.73   &lt;2e-16 ***
-## ---
-## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-## 
-## Residual standard error: 9751 on 38 degrees of freedom
-## Multiple R-squared:  0.9457, Adjusted R-squared:  0.9443 
-## F-statistic: 662.2 on 1 and 38 DF,  p-value: &lt; 2.2e-16</code></pre>
-<p>Como pudemos observar a partir da estatística F do modelo, e pelo valor-p que a variável <strong>PeD</strong> possui dentro do modelo, concluímos que ela é bastante significativa para o modelo.</p>
-</div>
-<div id="modelo-2-1" class="section level4">
-<h4>Modelo 2</h4>
-<p>Para este modelo, vamos adicionar a variável <strong>Marketing</strong>, já que ela foi a que teve a segunda maior correlação com <strong>Lucro</strong> encontrada.</p>
-<pre class="r"><code>regressor = lm(formula = Lucro ~ PeD + Marketing,
-               data = startup_training_set)
-summary(regressor)</code></pre>
-<pre><code>## 
-## Call:
-## lm(formula = Lucro ~ PeD + Marketing, data = startup_training_set)
-## 
-## Residuals:
-##    Min     1Q Median     3Q    Max 
-## -31922  -4693   -223   5904  18785 
-## 
-## Coefficients:
-##              Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept) 4.527e+04  3.243e+03  13.961 2.54e-16 ***
-## PeD         8.118e-01  5.124e-02  15.844  &lt; 2e-16 ***
-## Marketing   2.946e-02  1.895e-02   1.555    0.128    
-## ---
-## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-## 
-## Residual standard error: 9574 on 37 degrees of freedom
-## Multiple R-squared:  0.9491, Adjusted R-squared:  0.9463 
-## F-statistic: 344.7 on 2 and 37 DF,  p-value: &lt; 2.2e-16</code></pre>
-<p>Como pudemos perceber, a estatística F do modelo foi reduzida drasticamente ao adicionar a variável <strong>Marketing</strong> no modelo, e seu valor-p é <em>0,1</em>, maior do que o nível de significância definido, que é <em>0,05</em>. Logo, não vamos considerá-la como uma variável significativa para o nosso modelo, e vamos removê-la.</p>
-<p><strong>Conclusão</strong>: pela abordagem da <strong>Forward Elimination</strong>, também chegamos ao modelo ideal apenas com a variável <strong>PeD</strong>, assim como foi na <strong>Backward Elimination</strong>.</p>
-</div>
-</div>
-<div id="stepwise" class="section level3">
-<h3>Stepwise</h3>
-<p>Agora, para finalizar, vamos utilizar a abordagem <strong>Stepwise</strong> para seleção do melhor modelo e verificar se ela também diz que o modelo definido pelas duas abordagens anteriores é o mesmo. Veja abaixo a aplicação do método:</p>
-<pre class="r"><code>regressor = lm(formula = Lucro ~ .,
-               data = startup_training_set)
-step(regressor, direction = &quot;both&quot;)</code></pre>
+<pre class="r"><code>fit1 &lt;- lm(Lucro ~ ., startup_training_set)
+fit2 &lt;- lm(Lucro ~ 1, startup_training_set)
+
+stepAIC(fit1,direction=&quot;backward&quot;)</code></pre>
 <pre><code>## Start:  AIC=741.83
 ## Lucro ~ PeD + Administracao + Marketing + Estado
 ## 
@@ -3112,8 +2937,52 @@ step(regressor, direction = &quot;both&quot;)</code></pre>
 ## - Administracao  1 1.0113e+07 3.3915e+09 736.23
 ## &lt;none&gt;                        3.3813e+09 738.11
 ## - Marketing      1 2.3158e+08 3.6129e+09 738.76
-## + Estado         2 2.3592e+07 3.3578e+09 741.83
 ## - PeD            1 2.0629e+10 2.4011e+10 814.52
+## 
+## Step:  AIC=736.23
+## Lucro ~ PeD + Marketing
+## 
+##             Df  Sum of Sq        RSS    AIC
+## &lt;none&gt;                    3.3915e+09 736.23
+## - Marketing  1 2.2160e+08 3.6131e+09 736.76
+## - PeD        1 2.3009e+10 2.6400e+10 816.31</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = Lucro ~ PeD + Marketing, data = startup_training_set)
+## 
+## Coefficients:
+## (Intercept)          PeD    Marketing  
+##   4.527e+04    8.118e-01    2.946e-02</code></pre>
+<p><strong>Conclusão</strong>: pela abordagem da <strong>Backward Elimination</strong>, chegamos ao modelo ideal apenas com as variáveis <strong>PeD</strong> e <strong>Marketing</strong>.</p>
+</div>
+<div id="forward-elimination" class="section level3">
+<h3>Forward Elimination</h3>
+<p>Agora, utilizaremos a abordagem “Forward Elimination” para verificar se esta diz que o mesmo modelo é o ideal. Esse método possui os seguintes passos:</p>
+<ol style="list-style-type: decimal">
+<li>Define-se o nível de significância;</li>
+<li>Parte-se da suposição de que não há variável no modelo, apenas o intercepto;</li>
+<li>Adiciona-se uma variável de cada vez ao modelo, usando como critério a maior correlação para a menor.</li>
+</ol>
+<pre class="r"><code>stepAIC(fit2,direction=&quot;both&quot;,scope=list(upper=fit1,lower=fit2))</code></pre>
+<pre><code>## Start:  AIC=851.31
+## Lucro ~ 1
+## 
+##                 Df  Sum of Sq        RSS    AIC
+## + PeD            1 6.2963e+10 3.6131e+09 736.76
+## + Marketing      1 4.0175e+10 2.6400e+10 816.31
+## &lt;none&gt;                        6.6576e+10 851.31
+## + Administracao  1 2.4588e+09 6.4117e+10 851.80
+## + Estado         2 4.3159e+09 6.2260e+10 852.63
+## 
+## Step:  AIC=736.76
+## Lucro ~ PeD
+## 
+##                 Df  Sum of Sq        RSS    AIC
+## + Marketing      1 2.2160e+08 3.3915e+09 736.23
+## &lt;none&gt;                        3.6131e+09 736.76
+## + Administracao  1 1.3186e+05 3.6129e+09 738.76
+## + Estado         2 6.7340e+07 3.5457e+09 740.01
+## - PeD            1 6.2963e+10 6.6576e+10 851.31
 ## 
 ## Step:  AIC=736.23
 ## Lucro ~ PeD + Marketing
@@ -3131,8 +3000,50 @@ step(regressor, direction = &quot;both&quot;)</code></pre>
 ## Coefficients:
 ## (Intercept)          PeD    Marketing  
 ##   4.527e+04    8.118e-01    2.946e-02</code></pre>
-<p>Como podemos observar, a partir do método <em>stepwise</em>, percebemos que a seleção do modelo ideal para representação dos dados foi o que contém <strong>PeD</strong> e <strong>Marketing</strong>.</p>
-<p><strong>Conclusão</strong>: pela abordagem da <strong>Stepwise</strong>, chegamos a um modelo ideal com as variáveis <strong>PeD</strong> e <strong>Marketing</strong>, diferente do obtido na <strong>Backward Elimination</strong> e na <strong>Forward Elimination</strong>.</p>
+<p><strong>Conclusão</strong>: pela abordagem da <strong>Forward Elimination</strong>, também chegamos ao modelo ideal apenas com as variáveis <strong>PeD</strong> e <strong>Marketing</strong>, assim como foi na <strong>Backward Elimination</strong>.</p>
+</div>
+<div id="stepwise" class="section level3">
+<h3>Stepwise</h3>
+<p>Agora, para finalizar, vamos utilizar a abordagem <strong>Stepwise</strong> para seleção do melhor modelo e verificar se ela também diz que o modelo definido pelas duas abordagens anteriores é o mesmo. Veja abaixo a aplicação do método:</p>
+<pre class="r"><code>stepAIC(fit2,direction=&quot;both&quot;,scope=list(upper=fit1,lower=fit2))</code></pre>
+<pre><code>## Start:  AIC=851.31
+## Lucro ~ 1
+## 
+##                 Df  Sum of Sq        RSS    AIC
+## + PeD            1 6.2963e+10 3.6131e+09 736.76
+## + Marketing      1 4.0175e+10 2.6400e+10 816.31
+## &lt;none&gt;                        6.6576e+10 851.31
+## + Administracao  1 2.4588e+09 6.4117e+10 851.80
+## + Estado         2 4.3159e+09 6.2260e+10 852.63
+## 
+## Step:  AIC=736.76
+## Lucro ~ PeD
+## 
+##                 Df  Sum of Sq        RSS    AIC
+## + Marketing      1 2.2160e+08 3.3915e+09 736.23
+## &lt;none&gt;                        3.6131e+09 736.76
+## + Administracao  1 1.3186e+05 3.6129e+09 738.76
+## + Estado         2 6.7340e+07 3.5457e+09 740.01
+## - PeD            1 6.2963e+10 6.6576e+10 851.31
+## 
+## Step:  AIC=736.23
+## Lucro ~ PeD + Marketing
+## 
+##                 Df  Sum of Sq        RSS    AIC
+## &lt;none&gt;                        3.3915e+09 736.23
+## - Marketing      1 2.2160e+08 3.6131e+09 736.76
+## + Administracao  1 1.0113e+07 3.3813e+09 738.11
+## + Estado         2 2.4540e+07 3.3669e+09 739.94
+## - PeD            1 2.3009e+10 2.6400e+10 816.31</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = Lucro ~ PeD + Marketing, data = startup_training_set)
+## 
+## Coefficients:
+## (Intercept)          PeD    Marketing  
+##   4.527e+04    8.118e-01    2.946e-02</code></pre>
+<p>Como podemos observar, a partir do método <em>stepwise</em>, percebemos que a seleção do modelo ideal para representação dos dados foi o que contém <strong>PeD</strong> e <strong>Marketing</strong>, assim como nas duas abordagens anteriores.</p>
+<p><strong>Conclusão</strong>: pelas três abordagens escolhidas para selecionar o modelo, podemos definir que o melhor modelo é o que contém <strong>PeD</strong> e <strong>Marketing</strong>.</p>
 </div>
 </div>
 
