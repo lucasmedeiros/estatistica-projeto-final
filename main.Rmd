@@ -33,7 +33,11 @@ training.data.raw <- read.csv("data/pure-train.csv",header=T,na.strings=c(""))
 
 # 1. Introdução
   Para esse estudo, foi utilizado um arquivo contendo dados de 891 tripulantes do navio Titanic, que afundou na madrugado do dia 15 de abril de 1912, logo após ter colidido com um iceberg, onde das 2224 pessoas a bordo do navio, entre tripulantes, operários e  oficiais, somente 710 sobreviveram. Nosso objetivo, então, foi a partir da análise dos dados de 7 das variáveis presentes nesse dataset, identificar se houve influencia de um ou mais fatores na sobrevivência, ou não, do passageiro.
-  
+
+### 1.2 Regressão Logística
+
+  Uma **regressão linear logística**, ou **Regressão Bernoulli**, é um tipo de modelo linear generlizado onde a variável resposta é binária, ou seja, pode assumir dois valores possíveis, denominados "fracasso" e "sucesso", esse tipo de modelo é muito utilizado na área da saúde, onde o referido modelo pode ser usado para estimar a probabilidade do paciente aderir a um certo medicamento, por exemplo (exemplo: https://www.scielosp.org/article/rsp/1995.v29n4/283-289/pt/). Como a nossa variável resposta **Survived** não segue uma distribuição normal, mas sim uma distribuição de Bernoulli ("sucesso"= sobrevivencia e "fracasso" não-sobrevivência), não é possível utilizar a regressão linear simples/múltipla, restando a nós a utilização da **Regressão Logística Múltipla**.  
+
 # 2. Pré-processamento dos dados
 É importante que antes de começar a analisar os dados, levemos em consideração que podem haver dados corrompidos ou ausentes. Sendo assim, realizamos um pré-processamento dos dados dessa _dataset_
 
@@ -139,7 +143,7 @@ missmap(data, main = "Análise de valores ausentes por variável")
 ### 3.1.2 Não-Sobreviventes
 
 ```{r, echo=FALSE, warning=FALSE}
-#ggplot(gather(data.deads %>% select(-c("Fare", "Age", "Survived"))), aes(value)) + 
+#  ggplot(gather(data.deads %>% select(-c("Fare", "Age", "Survived"))), aes(value)) + 
 #  geom_histogram(stat="count") + 
 #  labs(x = "", y = "") +
 #  facet_wrap(~key, scales = 'free_x')
@@ -157,7 +161,7 @@ AA=xyTable(data$Survived, data$Pclass)
  
 coeff_bigger=0.05
 plot(AA$x , AA$y , cex=AA$number*coeff_bigger  , pch=16 , col=rgb(0,0,1,0.5) , xlab= "Survived" , ylab="Pclass" , xlim=c(0,1) , ylim=c(0,6) )
-text (AA$x , AA$y , AA$number )
+text (AA$x , AA$y , AA$number)
 ``` 
 
 ```{r, echo=FALSE}
@@ -228,40 +232,6 @@ titanic_clean_data %>%
          label = TRUE, hjust = 1,
          label_size = 3, size = 4,
          nbreaks = 5, layout.exp = 7)
-```
-
-## 3.5 Correlações das variáveis selecionadas
-
-```{r, warning=FALSE}
-cor(data$Survived, data$Pclass)
-cor(data$Survived, data$Fare)
-```
-
-## 3.6 Análise das correlações das variáveis selecionadas
-
-```{r, warning=FALSE}
-#titanic_clean_data <- data %>% select('Survived', 'Pclass', 'Sex', 'Fare')
-#titanic_clean_data %>%
-#  ggcorr(palette = "RdBu",
-#         color = "grey50",
-#         label = TRUE, hjust = 1,
-#         label_size = 3, size = 4,
-#         nbreaks = 5, layout.exp = 7)
-```
-
-## 3.7 Comportamento dos dados em relação à sobrevivência
-
-```{r, warning=FALSE}
-sex_disp <- data %>% 
-    ggplot(aes(x = Sex, y = Survived)) + 
-    geom_count() 
-pclass_disp <-data %>% 
-    ggplot(aes(x = Pclass, y = Survived)) + 
-    geom_count() 
-fare_disp <-data %>% 
-    ggplot(aes(x = Fare, y = Survived)) + 
-    geom_count() 
-grid.arrange(sex_disp, pclass_disp, fare_disp, nrow = 1)
 ```
 
 # 4. Seleção de um modelo
