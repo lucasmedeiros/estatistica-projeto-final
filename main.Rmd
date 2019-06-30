@@ -23,7 +23,7 @@ library(grid)
 library(gridExtra)
 library(broom)
 library(ggplot2)
-library(Amelia)
+# library(Amelia)
 library(ggridges)
 library(MASS)
 library(rsq)
@@ -43,7 +43,7 @@ training.data.raw <- read.csv("data/pure-train.csv",header=T,na.strings=c(""))
 
 ## 2.1. Análise dos dados ausentes
 ```{r}
-missmap(training.data.raw, main = "Análise de valores ausentes por variável")
+# missmap(training.data.raw, main = "Análise de valores ausentes por variável")
 ```
 
 ## 2.2. Higienização do _dataset_
@@ -53,7 +53,7 @@ missmap(training.data.raw, main = "Análise de valores ausentes por variável")
   
 ```{r}
 data <- subset(training.data.raw, select = c(2,3,5,6,7,8,10,12))
-missmap(data, main = "Análise de valores ausentes por variável")
+# missmap(data, main = "Análise de valores ausentes por variável")
 ```
 
 ### 2.2.4. Normalização de valores ausentes
@@ -70,7 +70,7 @@ rownames(data) <- NULL
 ### 2.2.5. Conjunto de dados formatado
 Por fim, chegamos a um bom conjunto de dados. Note que alcançamos um _dataset_ sem valores ausentes, isso nos permitirá fazer uma análise mais **consistente** e **precisa**.
 ```{r}
-missmap(data, main = "Análise de valores ausentes por variável")
+# missmap(data, main = "Análise de valores ausentes por variável")
 ```
 
 # 3. Análise Descritiva
@@ -212,8 +212,10 @@ grid.arrange(p1,p2, ncol=2)
 ```
 
 # 4. Seleção de um modelo
-[Falta texto]
-**Nível de significância:** 5%
+
+Agora, objetivando encontrar o melhor modelo no qual as variáveis impactam na inferência da sobrevivência de um passageiro do Titanic, podemos selecionar utilizando diferentes tipos de abordagens, por exemplo, **Backward Elimination**, **Forward Elimination** e **Stewise**.
+
+**OBS:** o nível de significância  que vamos adotar para a pesquisa é 5%.
 
 ## 4.1. Stepwise
 Utilizamos a abordagem **stepwise** em um modelo com todas as variáveis. Assim, obtivemos um modelo inicial já filtrado por essa técnica.
@@ -229,5 +231,12 @@ Notamos que mesmo após o **stepwise**, ainda tinhamos variáveis com p-valores 
 
 ```{r}
 model <- glm(Survived ~ Pclass + Age + Sex + SibSp, family=binomial(link='logit'),data=data) 
+summary(model)
+```
+
+Um outro critério que vamos aplicar é a remoção de **SibSp**, pois o seu valor-p está muito acima do valor-p das outras variáveis. Logo, nosso modelo final ficou com três variáveis: **Pclass**, **Age** e **Sex**.
+
+```{r}
+model <- glm(Survived ~ Pclass + Age + Sex, family=binomial(link='logit'),data=data) 
 summary(model)
 ```
