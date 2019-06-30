@@ -131,10 +131,10 @@ missmap(data, main = "Análise de valores ausentes por variável")
 ### 3.2.1 Sobreviventes
   
 ```{r warning=FALSE}
-#  ggplot(gather(data.survivors %>% select(-c("Fare", "Age", "Survived"))), aes(value)) + 
-#  geom_histogram(stat="count") + 
-#  labs(x = "", y = "") +
-#  facet_wrap(~key, scales = 'free_x')
+  ggplot(gather(data.survivors %>% dplyr::select(-c("Fare", "Age", "Survived"))), aes(value)) + 
+  geom_histogram(stat="count") + 
+  labs(x = "", y = "") +
+  facet_wrap(~key, scales = 'free_x')
 ```
 
 #### Análise Parcial
@@ -143,10 +143,10 @@ missmap(data, main = "Análise de valores ausentes por variável")
 ### 3.1.2 Não-Sobreviventes
 
 ```{r, echo=FALSE, warning=FALSE}
-#  ggplot(gather(data.deads %>% select(-c("Fare", "Age", "Survived"))), aes(value)) + 
-#  geom_histogram(stat="count") + 
-#  labs(x = "", y = "") +
-#  facet_wrap(~key, scales = 'free_x')
+  ggplot(gather(data.deads %>% dplyr::select(-c("Fare", "Age", "Survived"))), aes(value)) + 
+  geom_histogram(stat="count") + 
+  labs(x = "", y = "") +
+  facet_wrap(~key, scales = 'free_x')
 ```
 
 #### Análise Parcial
@@ -199,12 +199,17 @@ text (AA$x , AA$y , AA$number )
 
 #### 3.3.4 Parch x Survived
 ```{r}
-AA=xyTable(data$Survived, data$Parch)
+p1 <- ggplot(gather(data.survivors %>% dplyr::select("Parch")), aes(value)) + 
+  geom_histogram(stat="count") + 
+  labs(x = "", y = "") +
+  facet_wrap(~key, scales = 'free_x')
 
-coeff_bigger=0.03
+p2 <- ggplot(gather(data.survivors %>% dplyr::select("Parch")), aes(value)) + 
+  geom_histogram(stat="count") + 
+  labs(x = "", y = "") +
+  facet_wrap(~key, scales = 'free_x')
 
-plot(AA$x , AA$y , cex=AA$number*coeff_bigger  , pch=19 , col=rgb(0,1,0,0.5) , xlab= "Survived" , ylab="Nº de pais/filhos" , xlim=c(0,1) , ylim=c(0,6))
-text (AA$x , AA$y , AA$number)
+grid.arrange(p1,p2, ncol=2)
 
 ```
   Assim como no caso anterior, a dispersão entre as variáveis **Parch** e **Survived** não parecem ter uma correlação alta devido a semelhança entre as correlações.  
