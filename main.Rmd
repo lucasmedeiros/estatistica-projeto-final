@@ -23,7 +23,7 @@ library(grid)
 library(gridExtra)
 library(broom)
 library(ggplot2)
-# library(Amelia)
+library(Amelia)
 library(ggridges)
 library(MASS)
 library(rsq)
@@ -43,7 +43,7 @@ training.data.raw <- read.csv("data/pure-train.csv",header=T,na.strings=c(""))
 
 ## 2.1. Análise dos dados ausentes
 ```{r}
-# missmap(training.data.raw, main = "Análise de valores ausentes por variável")
+missmap(training.data.raw, main = "Análise de valores ausentes por variável")
 ```
 
 ## 2.2. Higienização do _dataset_
@@ -53,7 +53,7 @@ training.data.raw <- read.csv("data/pure-train.csv",header=T,na.strings=c(""))
   
 ```{r}
 data <- subset(training.data.raw, select = c(2,3,5,6,7,8,10,12))
-# missmap(data, main = "Análise de valores ausentes por variável")
+missmap(data, main = "Análise de valores ausentes por variável")
 ```
 
 ### 2.2.4. Normalização de valores ausentes
@@ -70,7 +70,7 @@ rownames(data) <- NULL
 ### 2.2.5. Conjunto de dados formatado
 Por fim, chegamos a um bom conjunto de dados. Note que alcançamos um _dataset_ sem valores ausentes, isso nos permitirá fazer uma análise mais **consistente** e **precisa**.
 ```{r}
-# missmap(data, main = "Análise de valores ausentes por variável")
+missmap(data, main = "Análise de valores ausentes por variável")
 ```
 
 # 3. Análise Descritiva
