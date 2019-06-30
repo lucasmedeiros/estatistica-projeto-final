@@ -25,6 +25,8 @@ library(broom)
 library(ggplot2)
 library(Amelia)
 library(ggridges)
+library(MASS)
+library(rsq)
 
 training.data.raw <- read.csv("data/pure-train.csv",header=T,na.strings=c(""))
 ```
@@ -125,10 +127,10 @@ missmap(data, main = "Análise de valores ausentes por variável")
 ### 3.2.1 Sobreviventes
   
 ```{r warning=FALSE}
-  ggplot(gather(data.survivors %>% select(-c("Fare", "Age", "Survived"))), aes(value)) + 
-  geom_histogram(stat="count") + 
-  labs(x = "", y = "") +
-  facet_wrap(~key, scales = 'free_x')
+#  ggplot(gather(data.survivors %>% select(-c("Fare", "Age", "Survived"))), aes(value)) + 
+#  geom_histogram(stat="count") + 
+#  labs(x = "", y = "") +
+#  facet_wrap(~key, scales = 'free_x')
 ```
 
 #### Análise Parcial
@@ -137,10 +139,10 @@ missmap(data, main = "Análise de valores ausentes por variável")
 ### 3.1.2 Não-Sobreviventes
 
 ```{r, echo=FALSE, warning=FALSE}
-ggplot(gather(data.deads %>% select(-c("Fare", "Age", "Survived"))), aes(value)) + 
-  geom_histogram(stat="count") + 
-  labs(x = "", y = "") +
-  facet_wrap(~key, scales = 'free_x')
+#ggplot(gather(data.deads %>% select(-c("Fare", "Age", "Survived"))), aes(value)) + 
+#  geom_histogram(stat="count") + 
+#  labs(x = "", y = "") +
+#  facet_wrap(~key, scales = 'free_x')
 ```
 
 #### Análise Parcial
@@ -238,13 +240,13 @@ cor(data$Survived, data$Fare)
 ## 3.6 Análise das correlações das variáveis selecionadas
 
 ```{r, warning=FALSE}
-titanic_clean_data <- data %>% select('Survived', 'Pclass', 'Sex', 'Fare')
-titanic_clean_data %>%
-  ggcorr(palette = "RdBu",
-         color = "grey50",
-         label = TRUE, hjust = 1,
-         label_size = 3, size = 4,
-         nbreaks = 5, layout.exp = 7)
+#titanic_clean_data <- data %>% select('Survived', 'Pclass', 'Sex', 'Fare')
+#titanic_clean_data %>%
+#  ggcorr(palette = "RdBu",
+#         color = "grey50",
+#         label = TRUE, hjust = 1,
+#         label_size = 3, size = 4,
+#         nbreaks = 5, layout.exp = 7)
 ```
 
 ## 3.7 Comportamento dos dados em relação à sobrevivência
@@ -260,4 +262,25 @@ fare_disp <-data %>%
     ggplot(aes(x = Fare, y = Survived)) + 
     geom_count() 
 grid.arrange(sex_disp, pclass_disp, fare_disp, nrow = 1)
+```
+
+# 4. Seleção de um modelo
+[Falta texto]
+**Nível de significância:** 5%
+
+## 4.1. Stepwise
+Utilizamos a abordagem **stepwise** em um modelo com todas as variáveis. Assim, obtivemos um modelo inicial já filtrado por essa técnica.
+
+```{r}
+model <- glm(Survived ~.,family=binomial(link='logit'),data=data) %>%
+  stepAIC(trace = FALSE)
+summary(model)
+```
+
+## 4.2. P-valores grandes
+Notamos que mesmo após o **stepwise**, ainda tinhamos variáveis com p-valores muito diferentes. Também é notória a descrepância entre eles, por isso optamos pela remoção das variáveis **EmbarkedQ** e **EmbarkedS** por seus valores-p serem muito grandes em relação aos menores (Pclass, Sexmale, Age, SibSp). 
+
+```{r}
+model <- glm(Survived ~ Pclass + Age + Sex + SibSp, family=binomial(link='logit'),data=data) 
+summary(model)
 ```
