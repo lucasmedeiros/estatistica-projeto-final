@@ -289,6 +289,15 @@ summary(model)
 
 **Conclusão**: A partir da abordagem **stepwise**, chegamos à conclusão de que o melhor modelo para explicar a sobrevivência ou não de pessoas que embarcaram on navio Titanic é o modelo com as variáveis **Pclass**, que indica a classe do navio em que o passageiro embarcou, **Age**, que indica a idade do passagero, e **Sex**, sendo sua idade.
 
+# 5. Análise de resíduos
+Em uma regressão logística não assumimos normalidade e nem homogeniedade dos resíduos. Logo, não iremos incluir tais testes.
+
+## 5.1. Teste de Linearidade
+```{r}
+plot(model,which=1)
+```
+
+
 # Interpretação dos resultados do modelo de regressão logística definido
 
 Primeiramente, vamos calcular o R-Quadrado do nosso modelo. Dado quem em um modelo de regrassão logística, não há o equivalente ao R-Quadrado da regressão linear, vamos utilizar um cálculo diferente para o mesmo, proposto por McFadden:
@@ -329,5 +338,8 @@ predict(model, newdata=jack, type="response")
 http://www.estatisticacomr.uff.br/?p=598  
 https://lamfo-unb.github.io/2018/09/29/MLG/  
 http://www.portalaction.com.br/analise-de-regressao/regressao-logistica  
-https://stats.stackexchange.com/questions/89533/convert-a-categorical-variable-to-a-numerical-variable-prior-to-regression
+https://www.lume.ufrgs.br/handle/10183/128182
+https://rpubs.com/paternogbc/46768
+http://www.portalaction.com.br/analise-de-regressao/regressao-logistica
+
 
