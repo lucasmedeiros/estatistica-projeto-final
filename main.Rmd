@@ -150,7 +150,7 @@ grid.arrange(p1,p2,ncol=2)
 
 ```
 
-  Na dispersão da variável **PClass** em relação a variável **Survived**, é possível perceber que grande parte dos individuos que não sobreviveram eram da classe baixa. Entretanto, tal discrepância não existe caso olhemos para o grupo dos individios que sobreviveram.
+  Na dispersão da variável **Pclass** em relação a variável **Survived**, é possível perceber que grande parte dos individuos que não sobreviveram eram da classe baixa. Entretanto, tal discrepância não existe caso olhemos para o grupo dos individios que sobreviveram.
 
 #### 3.2.2. Sex x Survived
 
@@ -176,11 +176,11 @@ grid.arrange(p1,p2,ncol=2)
 
 p1 <-  ggplot(data.survivors, aes(x=SibSp)) + geom_bar(fill=rgb(0.2,0.5,1, 1)) +
   labs(x = "N° de irmãos/cônjuges do passageiro ", y = "Frequência",title="Sobreviventes") +
-  scale_fill_brewer(palette = "Set1")
+  scale_fill_brewer(palette = "Set1") + ylim(0,150) + xlim(0,6)
 
 p2 <- ggplot(data.deads, aes(x=SibSp)) + geom_bar(fill=rgb(0.2,0.5,1, 1)) +
   labs(x = "N° de irmãos/cônjuges do passageiro", y = "Frequência",title="Não-Sobreviventes") +
-  scale_fill_brewer(palette = "Set1")
+  scale_fill_brewer(palette = "Set1") + ylim(0,150) + xlim(0,6)
 
 grid.arrange(p1,p2,ncol=2)
 
@@ -193,11 +193,11 @@ grid.arrange(p1,p2,ncol=2)
 
 p1 <-  ggplot(data.survivors, aes(x=Parch)) + geom_bar(fill=rgb(0.2,0.5,1, 1)) +
   labs(x = "N° de pais/filhos do passageiro", y = "Frequência",title="Sobreviventes") +
-  scale_fill_brewer(palette = "Set1")
+  scale_fill_brewer(palette = "Set1") + ylim(0,450) + xlim(0,6)
 
 p2 <- ggplot(data.deads, aes(x=Parch)) + geom_bar(fill=rgb(0.2,0.5,1, 1)) +
   labs(x = "N° de pais/filhos do passageiro", y = "Frequência",title="Não-Sobreviventes") +
-  scale_fill_brewer(palette = "Set1")
+  scale_fill_brewer(palette = "Set1")+ ylim(0,450) + xlim(0,6)
 
 grid.arrange(p1,p2, ncol=2)
 
@@ -211,16 +211,16 @@ grid.arrange(p1,p2, ncol=2)
 
 p1 <- ggplot(data.survivors, aes(Fare)) + 
   geom_histogram(fill=rgb(0.2,0.5,1, 1), binwidth = 20, color="white") + 
-  labs(x = "Tarifa Paga", y = "Frequência", title="Sobreviventes")
+  labs(x = "Tarifa Paga", y = "Frequência", title="Sobreviventes") + xlim(0,300)
 
 p2 <- ggplot(data.deads, aes(Fare)) + 
   geom_histogram(fill=rgb(0.2,0.5,1, 1), binwidth = 20,  color="white") + 
-  labs(x = "Tarifa Paga", y = "Frequência", title="Não-Sobreviventes")
+  labs(x = "Tarifa Paga", y = "Frequência", title="Não-Sobreviventes") + xlim(0,300)
 
 grid.arrange(p1,p2, ncol=2)
 ```
   
-  É possivel,a partir da análise da dispersão acima, perceber que existe uma discrepância muito menor entre as tarifas pagas entre os individuos que sobreviveram do que no subgrupo dos individuos que não sobreviveram. Isso pode representar uma boa correlação entre as variáveis **Fare** e **Survived**.
+  É possivel,a partir da análise da dispersão acima, de que ambos os gráficos possuem uma distribuição semelhante, isso pode ser uma evidência de que as variávies **Fare** e **Survived** não possuem não correlação muito alta.
   
 #### 3.2.6. Embarked x Survived
 
@@ -228,28 +228,29 @@ grid.arrange(p1,p2, ncol=2)
 
 p1 <-  ggplot(data.survivors, aes(x=Embarked)) + geom_bar(fill=rgb(0.2,0.5,1, 1)) +
   labs(x = "Porto embarcado", y = "Frequência",title="Sobreviventes") +
-  scale_fill_brewer(palette = "Set1")
+  scale_fill_brewer(palette = "Set1") + ylim(0, 450)
 
 p2 <- ggplot(data.deads, aes(x=Embarked)) + geom_bar(fill=rgb(0.2,0.5,1, 1)) +
   labs(x = "Porto embarcado", y = "Frequência",title="Não-Sobreviventes") +
-  scale_fill_brewer(palette = "Set1")
+  scale_fill_brewer(palette = "Set1") + ylim(0, 450)
 
 grid.arrange(p1,p2,ncol=2)
 
 ```
+  Os gráficos acima mostram de que em ambos os cenários, existe uma distribuição semelhante entre os grupos, onde os passageiros que embarcaram do porto **Southampton** é muito superior em ambos os casos, isso pode ser uma evidência de correlação baixa entre **Embarked** e **Survived**   
+  
 
 #### 3.2.7. Age x Survived
 
 ```{r,warning=FALSE}
 
-
 p1 <- ggplot(data.survivors, aes(Age)) + 
   geom_histogram(fill=rgb(0.2,0.5,1, 1), binwidth = 1, color="white") + 
-  labs(x = "Idade", y = "Frequência", title="Sobreviventes")
+  labs(x = "Idade", y = "Frequência", title="Sobreviventes") + ylim(0,150) + xlim(0,80)
 
 p2 <- ggplot(data.deads, aes(Age)) + 
   geom_histogram(fill=rgb(0.2,0.5,1, 1), binwidth = 1,  color="white") + 
-  labs(x = "Idade", y = "Frequência", title="Não-Sobreviventes")
+  labs(x = "Idade", y = "Frequência", title="Não-Sobreviventes") + ylim(0,150) + xlim(0,80)
 
 grid.arrange(p1,p2,ncol=2)
 
