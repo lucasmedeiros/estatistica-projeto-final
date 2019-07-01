@@ -23,10 +23,10 @@ library(grid)
 library(gridExtra)
 library(broom)
 library(ggplot2)
-library(Amelia)
 library(ggridges)
 library(MASS)
 library(rsq)
+library(pscl)
 
 training.data.raw <- read.csv("data/pure-train.csv",header=T,na.strings=c(""))
 ```
@@ -44,7 +44,7 @@ training.data.raw <- read.csv("data/pure-train.csv",header=T,na.strings=c(""))
 
 ## 2.1. Análise dos dados ausentes
 ```{r}
-missmap(training.data.raw, main = "Análise de valores ausentes por variável")
+# missmap(training.data.raw, main = "Análise de valores ausentes por variável")
 ```
 
 ## 2.2. Higienização do _dataset_
@@ -54,7 +54,7 @@ missmap(training.data.raw, main = "Análise de valores ausentes por variável")
   
 ```{r}
 data <- subset(training.data.raw, select = c(2,3,5,6,7,8,10,12))
-missmap(data, main = "Análise de valores ausentes por variável")
+# missmap(data, main = "Análise de valores ausentes por variável")
 ```
 
 ### 2.2.4. Normalização de valores ausentes
@@ -73,7 +73,7 @@ data$Pclass <- factor(data$Pclass)
 ### 2.2.5. Conjunto de dados formatado
 Por fim, chegamos a um bom conjunto de dados. Note que alcançamos um _dataset_ sem valores ausentes, isso nos permitirá fazer uma análise mais **consistente** e **precisa**.
 ```{r}
-missmap(data, main = "Análise de valores ausentes por variável")
+# missmap(data, main = "Análise de valores ausentes por variável")
 ```
 
 # 3. Análise Descritiva
@@ -283,3 +283,22 @@ Um outro critério que vamos aplicar é a remoção de **SibSp**, pois o seu val
 model <- glm(Survived ~ Pclass + Age + Sex, family=binomial(link='logit'),data=data) 
 summary(model)
 ```
+
+**Conclusão**: A partir da abordagem **stepwise**, chegamos à conclusão de que o melhor modelo para explicar a sobrevivência ou não de pessoas que embarcaram on navio Titanic é o modelo com as variáveis **Pclass**, que indica a classe do navio em que o passageiro embarcou, **Age**, que indica a idade do passagero, e **Sex**, sendo sua idade.
+
+# Interpretação dos resultados do modelo de regressão logística definido
+
+Primeiramente, vamos calcular o R-Quadrado do nosso modelo. Dado quem em um modelo de regrassão logística, não há o equivalente ao R-Quadrado da regressão linear, vamos utilizar um cálculo diferente para o mesmo, proposto por McFadden:
+
+```{r}
+pR2(model)
+```
+
+Agora, vamos fazer a interpretação ANOVA do modelo:
+
+```{r}
+anova(model, test="Chisq")
+```
+
+A partir dos resultados da ANOVA, podemos perceber que os p-valores das variáveis selecionadas para entrar no modelo são bem baixos, o que é um bom sinal, pois um valor-p muito baixo aqui significa que um modelo sem nenhuma variável (apenas com o intercepto) explicaria mais ou menos a mesma coisa que o modelo com as variáveis definidas.
+
