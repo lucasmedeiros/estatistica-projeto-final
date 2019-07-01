@@ -293,6 +293,12 @@ summary(model)
 Em uma regressão logística não assumimos normalidade e nem homogeniedade dos resíduos. Logo, não iremos incluir tais testes.
 
 ## 5.1. Teste de Linearidade
+O gráfico abaixo, mostra se os resíduos possuem padrões de relações não lineares.
+
+Como nossa variável alvo é binária, é esperado que haja uma relação monótona quando falamos sobre como se relacionam os resíduos VS predições.
+
+Mesmo que os pontos não se distribuam em torno da reta horizontal, quando obtemos a linha vermelha (uma aproximação das nossas duas curvas), vemos que ela se assemelha um pouco com a reta horizontal. O que nos dá um bom indicador que nossos dados possuem relação linear.
+
 ```{r}
 plot(model,which=1)
 ```
