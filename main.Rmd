@@ -239,12 +239,13 @@ grid.arrange(p1,p2,ncol=2)
 
 ```{r,warning=FALSE}
 
-p1 <-  ggplot(data.survivors, aes(x=Age)) + geom_bar(fill=rgb(0.2,0.5,1, 1)) +
-  labs(x = "", y = "",title="Sobreviventes") +
+p1 <-  ggplot(data.survivors, aes(x=Age)) + 
+  geom_bar(fill=rgb(0.2,0.5,1, 1), binwidth = 1, color = "white") +
+  labs(x = "Idade", y = "Frequência",title="Sobreviventes") +
   scale_fill_brewer(palette = "Set1")
 
-p2 <- ggplot(data.deads, aes(x=Age)) + geom_bar(fill=rgb(0.2,0.5,1, 1)) +
-  labs(x = "", y = "",title="Não-Sobreviventes") +
+p2 <- ggplot(data.deads, aes(x=Age)) + geom_bar(fill=rgb(0.2,0.5,1, 1), binwidth = 1, color = "white") +
+  labs(x = "Idade", y = "Frequência",title="Não-Sobreviventes") +
   scale_fill_brewer(palette = "Set1")
 
 grid.arrange(p1,p2,ncol=2)
