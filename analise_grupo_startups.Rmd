@@ -12,6 +12,8 @@ output:
     df_print: paged
 ---
 
+ 
+
 ```{r setup, include=FALSE}
 library(tidyverse)
 library(stats)
@@ -39,6 +41,19 @@ startup_test_set = subset(startup_dataset, split == FALSE)
 
 Vamos fazer uma análise com mais abordagens de seleção de modelo a partir dos dados do grupo com a temática "*Quais gastos interferem no lucro de uma startup?*".
 
+Inicialmente, vamos analisar o modelo com todas as variáveis independentes através do teste de hipótese ANOVA, para verificar se há alguma variável explicativa para o lucro de uma startup.
+
+```{r}
+fit1 <- lm(Lucro ~ ., startup_training_set)
+fit2 <- lm(Lucro ~ 1, startup_training_set)
+
+anova(fit1)
+```
+
+Como podemos observar, a variável **PeD**, por exemplo, por ter um valor-p muito baixo, tem uma grande possibilidade de ser uma das variáveis que explicam o lucro. **Marketing**, por ter uma alta correlação com o lucro e por ter um valor-p também aceitável, também pode ser uma das variáveis explicativas. Além disso, outras variáveis como, por exemplo, **Administracao** possuem valores-p muito altos.
+
+Portanto, pelo teste ANOVA, concluímos que o nosso modelo inicial (com todas as variáveis independentes) há variáveis explicativas, mas também precisa ser melhorado, pois há variáveis que não influenciam na nossa variável resposta, no caso, **Lucro**.
+
 **OBS: para todos os casos, utilizaremos nível de significância de 5%**.
 
 ### Backward Elimination
@@ -52,9 +67,6 @@ Inicaremos pelo caso mostrado pelo grupo, o "Backward Elimination", que tem os s
 5) Ajusta-se novamente o modelo, agora sem a variável removida.
 
 ```{r}
-fit1 <- lm(Lucro ~ ., startup_training_set)
-fit2 <- lm(Lucro ~ 1, startup_training_set)
-
 stepAIC(fit1,direction="backward")
 ```
 

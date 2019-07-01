@@ -257,18 +257,32 @@ grid.arrange(p1,p2,ncol=2)
 
 ```
 
+  Como os dados faltantes no _dataset_ foram substituidos pela média das idades, o valor 29.65345 possui uma frequência muito mais elevada.
+
 # 4. Seleção de um modelo
 
 Agora, objetivando encontrar o melhor modelo no qual as variáveis impactam na inferência da sobrevivência de um passageiro do Titanic, podemos selecionar utilizando diferentes tipos de abordagens, por exemplo, **Backward Elimination**, **Forward Elimination** e **Stepwise**.
 
 **OBS:** o nível de significância  que vamos adotar para a pesquisa é 5%.
 
+## 4.0. Há regressão?
+Pelo anova iremos verificar se pelo menos uma variável pode nos levar a uma regressão.
+```{r}
+model <- glm(Survived ~.,family=binomial(link='logit'),data=data)
+anova(model, test="Chisq")
+```
+
+Note que há quatro variáveis que o p-valor é menor que 0.05, portanto temos regressão e podemos seguir adiante. 
+
 ## 4.1. Stepwise
 Utilizamos a abordagem **stepwise** em um modelo com todas as variáveis. Assim, obtivemos um modelo inicial já filtrado por essa técnica.
 
 ```{r}
-model <- glm(Survived ~.,family=binomial(link='logit'),data=data) %>%
-  stepAIC(trace = FALSE)
+
+fitAll <- glm(Survived ~.,family=binomial(link='logit'),data=data)
+fitNone <- glm(Survived ~ 1.,family=binomial(link='logit'),data=data)
+
+model <- stepAIC(fitNone,direction="both",scope=list(upper=fitAll,lower=fitNone), trace=FALSE)
 summary(model)
 ```
 

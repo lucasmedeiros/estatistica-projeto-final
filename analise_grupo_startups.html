@@ -2905,6 +2905,18 @@ div.tocify {
 <div id="caso-do-grupo-das-startups" class="section level2">
 <h2>Caso do grupo das startups</h2>
 <p>Vamos fazer uma análise com mais abordagens de seleção de modelo a partir dos dados do grupo com a temática “<em>Quais gastos interferem no lucro de uma startup?</em>”.</p>
+<p>Inicialmente, vamos analisar o modelo com todas as variáveis independentes através do teste de hipótese ANOVA, para verificar se há alguma variável explicativa para o lucro de uma startup.</p>
+<pre class="r"><code>fit1 &lt;- lm(Lucro ~ ., startup_training_set)
+fit2 &lt;- lm(Lucro ~ 1, startup_training_set)
+
+anova(fit1)</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["Df"],"name":[1],"type":["int"],"align":["right"]},{"label":["Sum Sq"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["Mean Sq"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["F value"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["Pr(>F)"],"name":[5],"type":["dbl"],"align":["right"]}],"data":[{"1":"1","2":"6.296290e+10","3":"6.296290e+10","4":"6.375500e+02","5":"1.313587e-23","_rn_":"PeD"},{"1":"1","2":"1.318547e+05","3":"1.318547e+05","4":"1.335134e-03","5":"9.710659e-01","_rn_":"Administracao"},{"1":"1","2":"2.315794e+08","3":"2.315794e+08","4":"2.344927e+00","5":"1.349440e-01","_rn_":"Marketing"},{"1":"2","2":"2.359161e+07","3":"1.179581e+07","4":"1.194420e-01","5":"8.877862e-01","_rn_":"Estado"},{"1":"34","2":"3.357758e+09","3":"9.875760e+07","4":"NA","5":"NA","_rn_":"Residuals"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<p>Como podemos observar, a variável <strong>PeD</strong>, por exemplo, por ter um valor-p muito baixo, tem uma grande possibilidade de ser uma das variáveis que explicam o lucro. <strong>Marketing</strong>, por ter uma alta correlação com o lucro e por ter um valor-p também aceitável, também pode ser uma das variáveis explicativas. Além disso, outras variáveis como, por exemplo, <strong>Administracao</strong> possuem valores-p muito altos.</p>
+<p>Portanto, pelo teste ANOVA, concluímos que o nosso modelo inicial (com todas as variáveis independentes) há variáveis explicativas, mas também precisa ser melhorado, pois há variáveis que não influenciam na nossa variável resposta, no caso, <strong>Lucro</strong>.</p>
 <p><strong>OBS: para todos os casos, utilizaremos nível de significância de 5%</strong>.</p>
 <div id="backward-elimination" class="section level3">
 <h3>Backward Elimination</h3>
@@ -2916,10 +2928,7 @@ div.tocify {
 <li>Se o valor p é maior que o nível de significância, remove-se a variável;</li>
 <li>Ajusta-se novamente o modelo, agora sem a variável removida.</li>
 </ol>
-<pre class="r"><code>fit1 &lt;- lm(Lucro ~ ., startup_training_set)
-fit2 &lt;- lm(Lucro ~ 1, startup_training_set)
-
-stepAIC(fit1,direction=&quot;backward&quot;)</code></pre>
+<pre class="r"><code>stepAIC(fit1,direction=&quot;backward&quot;)</code></pre>
 <pre><code>## Start:  AIC=741.83
 ## Lucro ~ PeD + Administracao + Marketing + Estado
 ## 
