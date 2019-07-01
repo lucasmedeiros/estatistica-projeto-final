@@ -28,6 +28,7 @@ library(ggridges)
 library(MASS)
 library(rsq)
 library(pscl)
+library(ROCR)
 
 training.data.raw <- read.csv("data/pure-train.csv",header=T,na.strings=c(""))
 ```
@@ -308,3 +309,25 @@ A partir dos resultados da ANOVA, podemos perceber que os p-valores das variáve
 
 # Conclusão
 A partir do modelo obtido, é possivel perceber que a variável **Sex** tem o menor valor-p dentre as variáveis significativas que estão presentes nesse modelo. Isso indica ainda que uma pessoa que embarcou no Titanic que seja do sexo feminino tem uma probabilidade maior de ter sobrevivido do que uma pessoa do sexo masculino, graças ao coeficiente negativo que este tem em relação às outras variáveis.
+
+# Titanic: Rose e Jack
+Utilizando o nosso modelo, prevemos a chance de sobrevivência dos protagonistas do filme Titanic.  
+
+A chance de Rose (uma mulher de 17 anos que viajava na 1ª classe sobreviver), prevista pelo nosso modelo, é de **95.84**%.
+```{r}
+rose <- data.frame(Pclass="1", Sex = "female", Age=17)
+predict(model, newdata=rose, type="response")
+```
+
+Quanto a Jack (um homem de 20 anos que viajava na 2º classe), prevista pelo nosso modelo, é de **11.29**%.
+```{r}
+jack <- data.frame(Pclass="3", Sex = "male", Age=20)
+predict(model, newdata=jack, type="response")
+```
+
+# Referências
+http://www.estatisticacomr.uff.br/?p=598  
+https://lamfo-unb.github.io/2018/09/29/MLG/  
+http://www.portalaction.com.br/analise-de-regressao/regressao-logistica  
+https://stats.stackexchange.com/questions/89533/convert-a-categorical-variable-to-a-numerical-variable-prior-to-regression
+
