@@ -3209,6 +3209,7 @@ summary(model)</code></pre>
 ## -402.3376610 -591.4088880  378.1424540    0.3196963    0.3464636 
 ##         r2CU 
 ##    0.4709588</code></pre>
+<p>Com o R-Quadrado de aproximadamente 0.32, significa que apenas 32% dos dados estão sendo representados por esse modelo, valor que pode ser considerado mediano-baixo.</p>
 <p>Agora, vamos fazer a interpretação ANOVA do modelo:</p>
 <pre class="r"><code>anova(model, test=&quot;Chisq&quot;)</code></pre>
 <div data-pagedtable="false">
@@ -3217,6 +3218,10 @@ summary(model)</code></pre>
   </script>
 </div>
 <p>A partir dos resultados da ANOVA, podemos perceber que os p-valores das variáveis selecionadas para entrar no modelo são bem baixos, o que é um bom sinal, pois um valor-p muito baixo aqui significa que um modelo sem nenhuma variável (apenas com o intercepto) explicaria mais ou menos a mesma coisa que o modelo com as variáveis definidas.</p>
+</div>
+<div id="conclusao" class="section level1">
+<h1>Conclusão</h1>
+<p>A partir do modelo obtido, é possivel perceber que a variável <strong>Sex</strong> tem o menor valor-p dentre as variáveis significativas que estão presentes nesse modelo. Isso indica ainda que uma pessoa que embarcou no Titanic que seja do sexo feminino tem uma probabilidade maior de ter sobrevivido do que uma pessoa do sexo masculino, graças ao coeficiente negativo que este tem em relação às outras variáveis.</p>
 </div>
 
 

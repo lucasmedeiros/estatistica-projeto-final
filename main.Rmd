@@ -21,6 +21,7 @@ library(gghighlight)
 library(GGally)
 library(grid)
 library(gridExtra)
+library(Amelia)
 library(broom)
 library(ggplot2)
 library(ggridges)
@@ -44,7 +45,7 @@ training.data.raw <- read.csv("data/pure-train.csv",header=T,na.strings=c(""))
 
 ## 2.1. Análise dos dados ausentes
 ```{r}
-# missmap(training.data.raw, main = "Análise de valores ausentes por variável")
+missmap(training.data.raw, main = "Análise de valores ausentes por variável")
 ```
 
 ## 2.2. Higienização do _dataset_
@@ -54,7 +55,7 @@ training.data.raw <- read.csv("data/pure-train.csv",header=T,na.strings=c(""))
   
 ```{r}
 data <- subset(training.data.raw, select = c(2,3,5,6,7,8,10,12))
-# missmap(data, main = "Análise de valores ausentes por variável")
+missmap(data, main = "Análise de valores ausentes por variável")
 ```
 
 ### 2.2.4. Normalização de valores ausentes
@@ -73,7 +74,7 @@ data$Pclass <- factor(data$Pclass)
 ### 2.2.5. Conjunto de dados formatado
 Por fim, chegamos a um bom conjunto de dados. Note que alcançamos um _dataset_ sem valores ausentes, isso nos permitirá fazer uma análise mais **consistente** e **precisa**.
 ```{r}
-# missmap(data, main = "Análise de valores ausentes por variável")
+missmap(data, main = "Análise de valores ausentes por variável")
 ```
 
 # 3. Análise Descritiva
@@ -294,6 +295,8 @@ Primeiramente, vamos calcular o R-Quadrado do nosso modelo. Dado quem em um mode
 pR2(model)
 ```
 
+Com o R-Quadrado de aproximadamente 0.32, significa que apenas 32% dos dados estão sendo representados por esse modelo, valor que pode ser considerado mediano-baixo.
+
 Agora, vamos fazer a interpretação ANOVA do modelo:
 
 ```{r}
@@ -302,3 +305,5 @@ anova(model, test="Chisq")
 
 A partir dos resultados da ANOVA, podemos perceber que os p-valores das variáveis selecionadas para entrar no modelo são bem baixos, o que é um bom sinal, pois um valor-p muito baixo aqui significa que um modelo sem nenhuma variável (apenas com o intercepto) explicaria mais ou menos a mesma coisa que o modelo com as variáveis definidas.
 
+# Conclusão
+A partir do modelo obtido, é possivel perceber que a variável **Sex** tem o menor valor-p dentre as variáveis significativas que estão presentes nesse modelo. Isso indica ainda que uma pessoa que embarcou no Titanic que seja do sexo feminino tem uma probabilidade maior de ter sobrevivido do que uma pessoa do sexo masculino, graças ao coeficiente negativo que este tem em relação às outras variáveis.
