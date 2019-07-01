@@ -91,9 +91,9 @@ missmap(data, main = "Análise de valores ausentes por variável")
 
 
 * **pclass:** classe em que o passageiro estava viajando  
-  + "1", caso seja da Classe alta  
-  + "2", caso seja da Classe média  
-  + "3", caso seja da Classe baixa  
+  + "1", Estava viajando na Primeira Classe  
+  + "2", Estava viajando Segunda Classe  
+  + "3", Estava viajando Terceira Classe  
 
 
 * **sex:** sexo do passageiro  
